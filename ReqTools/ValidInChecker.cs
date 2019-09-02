@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReqTools
 {
-    static class ValidInChecker
+    public static class ValidInChecker
     {
         public static bool IsValidIn(string version, string ValidFrom, string ValidTo)
         {

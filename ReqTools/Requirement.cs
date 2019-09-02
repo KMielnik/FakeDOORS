@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace ReqTools
 {
-    class Requirement
+    public class Requirement
     {
         public string ID { get; }
         [JsonIgnore]
