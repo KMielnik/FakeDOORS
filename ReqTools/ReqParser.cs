@@ -219,7 +219,7 @@ namespace ReqTools
             File.Copy(defaultServerCachedFileName, defaultCachedFileName, true);
         });
 
-        public async Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename)
+        public async Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename = defaultCachedFileName)
         {
             string exportDateJson;
             string reqJson;
@@ -239,7 +239,7 @@ namespace ReqTools
             ));
         }
 
-        public async Task ParseToFileAsync(IProgress<string> progress, string input, string output)
+        public async Task ParseToFileAsync(IProgress<string> progress, string input, string output = defaultCachedFileName)
         {
             progress.Report("Loading...");
 
