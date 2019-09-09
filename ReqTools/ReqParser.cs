@@ -70,8 +70,8 @@ namespace ReqTools
                         .InnerText
                         .Trim()
                         .Split('\n')
-                        .Where(y => string.IsNullOrWhiteSpace(y) == false)
-                        .Select(y => WebUtility.HtmlDecode(y));
+                        .Where(y => !string.IsNullOrWhiteSpace(y))
+                        .Select(WebUtility.HtmlDecode);
 
                     var ID = reqStrings
                         .FirstOrDefault()
@@ -214,10 +214,7 @@ namespace ReqTools
         });
 
         public async Task DownloadNewestVersion()
-        => await Task.Run(() =>
-        {
-            File.Copy(defaultServerCachedFileName, defaultCachedFileName, true);
-        });
+        => await Task.Run(() => File.Copy(defaultServerCachedFileName, defaultCachedFileName, true));
 
         public async Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename = defaultCachedFileName)
         {
@@ -241,6 +238,17 @@ namespace ReqTools
 
         public async Task ParseToFileAsync(IProgress<string> progress, string input, string output = defaultCachedFileName)
         {
+            var parseData = await Parse(progress, input);
+
+            File.WriteAllLines(output,
+                new[] {
+                    JsonConvert.SerializeObject(parseData.exportDate),
+                    JsonConvert.SerializeObject(parseData.reqs)
+                });
+        }
+
+        public async Task<(List<Requirement> reqs, DateTime exportDate)> Parse(IProgress<string> progress, string input)
+        {
             progress.Report("Loading...");
 
             var clock = new Stopwatch();
@@ -248,7 +256,8 @@ namespace ReqTools
 
             progress.Report("Splitting file in parts.");
             var documentTasks = (await LoadExportFileInParts(input))
-                .Select(x => LoadDocumentFromString(x))
+                .AsParallel()
+                .Select(LoadDocumentFromString)
                 .ToList();
 
             var requirements = new List<Requirement>();
@@ -263,13 +272,9 @@ namespace ReqTools
 
             clock.Stop();
             progress.Report("Saving to file...");
-
-            File.WriteAllLines(output,
-                new[] {
-                    JsonConvert.SerializeObject(DateTime.Now),
-                    JsonConvert.SerializeObject(requirements)
-                });
             progress.Report($"Done. (in {clock.Elapsed.Seconds}s.)");
+
+            return (requirements, DateTime.Now);
         }
     }
 }
