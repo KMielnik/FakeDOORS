@@ -8,7 +8,9 @@ namespace ReqTools
     public interface IDatabaseService
     {
         event EventHandler RequirementsChanged;
-        Task<List<Requirement>> GetRequirements();
+        Task Init();
+        List<Requirement> GetRequirements();
+        Task<List<TestCase>> GetTestCases();
         Task<bool> CheckForUpdates();
         Task DownloadNewestVersion();
     }

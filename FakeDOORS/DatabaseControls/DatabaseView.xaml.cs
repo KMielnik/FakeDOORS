@@ -1,4 +1,6 @@
 ﻿using FakeDOORS.DatabaseControls.RequirementsControls;
+using FakeDOORS.DatabaseControls.TestCasesControls;
+using ReqTools;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FakeDOORS
 {
@@ -20,6 +23,7 @@ namespace FakeDOORS
     public partial class DatabaseView : UserControl
     {
         private RequirementsView requirementsView;
+        private TestCasesView testCasesView;
         public DatabaseView()
         {
             InitializeComponent();
@@ -28,15 +32,21 @@ namespace FakeDOORS
             requirementsView.Loaded += RequirementsView_Loaded;
 
             RequirementsViewControl.Content = requirementsView;
+
+            testCasesView = new TestCasesView();
+
+            TestCasesViewControl.Content = testCasesView;
         }
 
-        private void RequirementsView_Loaded(object sender, RoutedEventArgs e)
+        private async void RequirementsView_Loaded(object sender, RoutedEventArgs e)
         {
+            var loadingReqsTask = App.ServiceProvider.GetService<IDatabaseService>().Init();
             var settings = new ReqViewSettingsBuilder()
                 .AddDefaultSettings()
                 .Build();
 
             requirementsView.SetReqView(settings);
+            await loadingReqsTask;
         }
     }
 }

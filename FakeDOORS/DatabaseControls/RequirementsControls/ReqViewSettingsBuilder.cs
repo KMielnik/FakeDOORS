@@ -17,6 +17,7 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
             reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.IDColumn);
             reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.TextColumn);
             reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.FVariant);
+            reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.BoldHeaders);
 
             return this;
         }

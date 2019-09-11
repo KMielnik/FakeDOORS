@@ -11,7 +11,8 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
         {
             IDColumn,
             TextColumn,
-            FVariant
+            FVariant,
+            BoldHeaders
         }
 
         private Queue<SettingTypes> Settings;
