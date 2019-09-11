@@ -20,9 +20,14 @@ namespace FakeDOORS
     /// </summary>
     public partial class MainWindow : Window
     {
+        private DatabaseView databaseView;
         public MainWindow()
         {
             InitializeComponent();
+
+            databaseView = new DatabaseView();
+
+            DatabaseViewControl.Content = databaseView;
         }
     }
 }

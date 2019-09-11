@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="FakeDOORS.RequirementsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FakeDOORS"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Loaded="RequirementsView_Loaded">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="16"/>
+        </Grid.RowDefinitions>
+        <DataGrid Name="ReqHelperTop" Grid.Row="0" FontSize="10"
+                  RowHeight="15"
+                  CanUserAddRows="False" IsReadOnly="True"
+                  HeadersVisibility="None" 
+                  VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
+
+        <DataGrid Name="ReqDataGrid" Grid.Row="1" ItemsSource="{Binding Requirements}"
+                  RowHeight="20" CanUserResizeRows="False"
+                  CanUserSortColumns="False" AutoGenerateColumns="False"
+                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                  AlternationCount="2" AlternatingRowBackground="AliceBlue"
+                  HeadersVisibility="Column"
+                  ScrollViewer.ScrollChanged="ReqDataGrid_ScrollChanged"
+                  LayoutUpdated="ReqDataGrid_LayoutUpdated"
+                  ColumnDisplayIndexChanged="ReqDataGrid_ColumnDisplayIndexChanged"/>
+
+        <DataGrid Name="ReqHelperBottom" Grid.Row="2" FontSize="10"
+                  RowHeight="15"
+                  CanUserAddRows="False" IsReadOnly="True"
+                  HeadersVisibility="None" 
+                  VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
+    </Grid>
+</UserControl>
