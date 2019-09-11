@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 namespace ReqTools
 {
-    interface IReqParser
+    public interface IReqParser
     {
         Task ParseToFileAsync(IProgress<string> progress, string input, string output);
         Task<(List<Requirement> reqs, DateTime exportDate)> Parse(IProgress<string> progress, string input);
         Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename);
-        Task<bool> CheckForUpdates();
-        Task DownloadNewestVersion();
     }
 }

@@ -15,16 +15,13 @@ namespace ReqTools
 {
     public class ReqParser : IReqParser
     {
-        private const string defaultCachedFileName = "cached_reqs.json";
-        private const string defaultServerCachedFileName = @"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\Data\cached_reqs.json";
-
         private async Task<HtmlDocument> LoadDocumentFromString(string text)
         => await Task.Run(() =>
         {
             var document = new HtmlDocument();
             document.LoadHtml(text);
             return document;
-        });
+        }).ConfigureAwait(false);
 
         private async Task<IEnumerable<string>> LoadExportFileInParts(string filename)
         => await Task.Run(() =>
@@ -172,7 +169,7 @@ namespace ReqTools
                     };
 
                     var ValidFrom = reqStrings
-                        .Where(y => y.Contains("ValidFrom:"))
+                        .Where(y => y.Contains("ValidFrom:", StringComparison.InvariantCulture))
                         .Select(y => Regex.Match(y, @"\d\d\.\d").Value)
                         .Select(y => string.IsNullOrWhiteSpace(y) ? "-" : y)
                         .FirstOrDefault();
@@ -201,28 +198,13 @@ namespace ReqTools
             return requirments;
         });
 
-        public async Task<bool> CheckForUpdates()
-        => await Task.Run(() =>
-        {
-            string cachedDateJson = File.ReadAllLines(defaultCachedFileName)[0];
-            string serverDateJson = File.ReadAllLines(defaultServerCachedFileName)[0];
-
-            var cachedDate = JsonConvert.DeserializeObject<DateTime>(cachedDateJson);
-            var serverDate = JsonConvert.DeserializeObject<DateTime>(serverDateJson);
-
-            return serverDate > cachedDate;
-        });
-
-        public async Task DownloadNewestVersion()
-        => await Task.Run(() => File.Copy(defaultServerCachedFileName, defaultCachedFileName, true));
-
-        public async Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename = defaultCachedFileName)
+        public async Task<(List<Requirement> reqs, DateTime exportDate)> GetReqsFromCachedFile(string filename)
         {
             string exportDateJson;
             string reqJson;
 
             if (!File.Exists(filename))
-                await DownloadNewestVersion();
+                return (new List<Requirement>(), DateTime.MinValue);
 
             var lines = File.ReadAllLines(filename);
 
@@ -236,7 +218,7 @@ namespace ReqTools
             ));
         }
 
-        public async Task ParseToFileAsync(IProgress<string> progress, string input, string output = defaultCachedFileName)
+        public async Task ParseToFileAsync(IProgress<string> progress, string input, string output)
         {
             var parseData = await Parse(progress, input);
 
