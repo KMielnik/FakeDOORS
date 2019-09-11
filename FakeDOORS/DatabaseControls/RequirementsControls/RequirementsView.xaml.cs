@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using FakeDOORS.DatabaseControls.RequirementsControls;
 
 namespace FakeDOORS
 {
@@ -32,30 +33,44 @@ namespace FakeDOORS
             databaseService.RequirementsChanged += DatabaseService_RequirementsChanged;
         }
 
-        public void SetReqView()
+        public void SetReqView(ReqViewSettings settings)
         {
-            ReqDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = "ID",
-                Binding = new Binding(nameof(Requirement.ID)),
-                IsReadOnly = true
-            });
-
-            ReqDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Text",
-                Binding = new Binding(nameof(Requirement.TextIntended)),
-                IsReadOnly = true,
-                Width = 500
-            });
-
-            ReqDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = "Functional Variants",
-                Binding = new Binding(nameof(Requirement.FVariants)),
-                IsReadOnly = true,
-                Width = 200
-            });
+            foreach(var setting in settings)
+                switch (setting)
+                {
+                    case ReqViewSettings.SettingTypes.IDColumn:
+                        {
+                            ReqDataGrid.Columns.Add(new DataGridTextColumn
+                            {
+                                Header = "ID",
+                                Binding = new Binding(nameof(Requirement.ID)),
+                                IsReadOnly = true
+                            });
+                            break;
+                        }
+                    case ReqViewSettings.SettingTypes.TextColumn:
+                        {
+                            ReqDataGrid.Columns.Add(new DataGridTextColumn
+                            {
+                                Header = "Text",
+                                Binding = new Binding(nameof(Requirement.TextIntended)),
+                                IsReadOnly = true,
+                                Width = 500
+                            });
+                            break;
+                        }
+                    case ReqViewSettings.SettingTypes.FVariant:
+                        {
+                            ReqDataGrid.Columns.Add(new DataGridTextColumn
+                            {
+                                Header = "Functional Variants",
+                                Binding = new Binding(nameof(Requirement.FVariants)),
+                                IsReadOnly = true,
+                                Width = 200
+                            });
+                            break;
+                        }
+                }
         }
 
         private async Task RefreshRequirements()

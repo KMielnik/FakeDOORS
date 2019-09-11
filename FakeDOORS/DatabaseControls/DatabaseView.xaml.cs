@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FakeDOORS.DatabaseControls.RequirementsControls;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -31,7 +32,11 @@ namespace FakeDOORS
 
         private void RequirementsView_Loaded(object sender, RoutedEventArgs e)
         {
-            requirementsView.SetReqView();
+            var settings = new ReqViewSettingsBuilder()
+                .AddDefaultSettings()
+                .Build();
+
+            requirementsView.SetReqView(settings);
         }
     }
 }
