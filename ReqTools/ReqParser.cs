@@ -239,6 +239,7 @@ namespace ReqTools
             progress.Report("Splitting file in parts.");
             var documentTasks = (await LoadExportFileInParts(input))
                 .AsParallel()
+                .AsOrdered()
                 .Select(LoadDocumentFromString)
                 .ToList();
 
