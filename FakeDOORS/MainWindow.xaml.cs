@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +26,7 @@ namespace FakeDOORS
         {
             InitializeComponent();
 
-            databaseView = new DatabaseView();
+            databaseView = App.ServiceProvider.GetRequiredService<DatabaseView>();
 
             DatabaseViewControl.Content = databaseView;
         }

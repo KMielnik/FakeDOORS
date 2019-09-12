@@ -19,12 +19,14 @@
         <TextBox Grid.Row="1" Name="TCFilter" Margin="5 2" TextChanged="TCFilter_TextChanged" 
                      VerticalAlignment="Center" KeyDown="TCFilter_KeyDown"/>
         <ListBox Grid.Row="2" Margin="10 5" 
+                 Name="AllTCsListBox"
                  ItemsSource="{Binding TestCases}"
                  ScrollViewer.CanContentScroll="True"
                  SelectionMode="Multiple"
                  VirtualizingPanel.IsVirtualizing="True"
                  VirtualizingPanel.VirtualizationMode="Recycling" 
                  SelectionChanged="AllTCsListBox_SelectionChanged"
+                 PreviewMouseDown="AllTCsListBox_MouseDown"
                  MouseLeave="AllTCsListBox_LostFocus">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">

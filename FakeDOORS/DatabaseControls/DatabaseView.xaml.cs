@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace FakeDOORS
 {
@@ -24,23 +25,35 @@ namespace FakeDOORS
     {
         private RequirementsView requirementsView;
         private TestCasesView testCasesView;
-        public DatabaseView()
+
+        private IDatabaseService databaseService;
+
+        public DatabaseView(IDatabaseService databaseService)
         {
             InitializeComponent();
 
-            requirementsView = new RequirementsView();
+            this.databaseService = databaseService;
+
+            requirementsView = App.ServiceProvider.GetRequiredService<RequirementsView>();
             requirementsView.Loaded += RequirementsView_Loaded;
 
             RequirementsViewControl.Content = requirementsView;
 
-            testCasesView = new TestCasesView();
+            testCasesView = App.ServiceProvider.GetRequiredService<TestCasesView>();
+
+            testCasesView.SelectionChanged += TestCasesView_SelectionChanged;
 
             TestCasesViewControl.Content = testCasesView;
         }
 
+        private async void TestCasesView_SelectionChanged(object sender, EventArgs e)
+        {
+            await requirementsView.SetSelectedTestCases(testCasesView.SelectedTCs.ToList());
+        }
+
         private async void RequirementsView_Loaded(object sender, RoutedEventArgs e)
         {
-            var loadingReqsTask = App.ServiceProvider.GetService<IDatabaseService>().Init();
+            var loadingReqsTask = databaseService.Init();
             var settings = new ReqViewSettingsBuilder()
                 .AddDefaultSettings()
                 .Build();

@@ -15,21 +15,26 @@ namespace ReqTools
         private IReqParser reqParser;
 
         private List<Requirement> requirements;
+        private List<TestCase> allTestCases;
         private DateTime reqsExportDate;
+
+        private string versionFilter;
         public DatabaseService(IReqParser reqParser)
         {
             this.reqParser = reqParser;
             requirements = new List<Requirement>();
+            allTestCases = new List<TestCase>();
         }
 
         public event EventHandler RequirementsChanged;
 
-        public async Task Init()
+        public async Task Init(string versionFilter)
         {
+            this.versionFilter = versionFilter;
+
             if (File.Exists(defaultCachedFileName))
             {
-                requirements.Clear();
-                requirements.AddRange((await reqParser.GetReqsFromCachedFile(defaultCachedFileName)).reqs);
+                await RefreshCachedData();
                 RequirementsChanged?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -49,25 +54,39 @@ namespace ReqTools
 
         public async Task DownloadNewestVersion()
         => await Task.Run(() => File.Copy(defaultServerCachedFileName, defaultCachedFileName, true))
-            .ContinueWith(async (s) =>
-            {
-                requirements.Clear();
-                requirements.AddRange((await reqParser.GetReqsFromCachedFile(defaultCachedFileName)).reqs);
-            })
-            .ContinueWith((s) => RequirementsChanged?.Invoke(this, EventArgs.Empty));
+            .ContinueWith(s => RefreshCachedData())
+            .ContinueWith(s => RequirementsChanged?.Invoke(this, EventArgs.Empty));
 
+        private async Task RefreshCachedData()
+        {
+            requirements.Clear();
+            requirements.AddRange((await reqParser.GetReqsFromCachedFile(defaultCachedFileName)).reqs);
+
+            allTestCases.Clear();
+            allTestCases.AddRange(requirements
+                .AsParallel()
+                .SelectMany(x => x.TCs)
+                .Distinct()
+                .OrderBy(x => x.IDValue));
+        }
         public List<Requirement> GetRequirements()
-        => requirements;
+        => requirements
+            .Where(x => x.IsValidInSpecifiedVersion(versionFilter))
+            .ToList();
 
         public async Task<List<TestCase>> GetTestCases()
         => await Task.Run(() =>
          {
-             return requirements
-                .AsParallel()
-                .SelectMany(x => x.TCs)
-                .Distinct()
-                .OrderBy(x => x.IDValue)
+             return allTestCases
+                .Where(x => x.IsValidInSpecifiedVersion(versionFilter))
                 .ToList();
          });
+
+        public string GetTestCaseText(int tc)
+        {
+            return allTestCases
+                .First(x => x.IDValue == tc)
+                .Text;
+        }
     }
 }

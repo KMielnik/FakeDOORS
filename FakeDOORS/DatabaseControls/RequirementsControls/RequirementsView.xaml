@@ -10,14 +10,15 @@
              Loaded="RequirementsView_Loaded">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <DataGrid Name="ReqHelperTop" Grid.Row="0" FontSize="10"
-                  RowHeight="15"
+        <DataGrid Name="ReqHelperTop" Grid.Row="0"
+                  RowHeight="19" ItemsSource="{Binding ReqTopHelperData}"
                   CanUserAddRows="False" IsReadOnly="True"
-                  HeadersVisibility="None" 
+                  HeadersVisibility="None"
+                  FontWeight="ExtraBold" FontSize="13"
                   VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
 
         <DataGrid Name="ReqDataGrid" Grid.Row="1" ItemsSource="{Binding Requirements}"
@@ -30,10 +31,11 @@
                   LayoutUpdated="ReqDataGrid_LayoutUpdated"
                   ColumnDisplayIndexChanged="ReqDataGrid_ColumnDisplayIndexChanged"/>
 
-        <DataGrid Name="ReqHelperBottom" Grid.Row="2" FontSize="10"
-                  RowHeight="15"
+        <DataGrid Name="ReqHelperBottom" Grid.Row="2"
+                  RowHeight="19" ItemsSource="{Binding ReqBottomHelperData}"
                   CanUserAddRows="False" IsReadOnly="True"
                   HeadersVisibility="None" 
+                  FontWeight="ExtraBold" FontSize="13"
                   VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
     </Grid>
 </UserControl>

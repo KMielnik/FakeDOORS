@@ -26,6 +26,9 @@ namespace ReqTools
         public string ValidFrom { get; }
         public string ValidTo { get; }
 
+        [JsonIgnore]
+        public bool IsVisible { get; set; }
+
         public enum Types
         {
             Head,
@@ -61,6 +64,8 @@ namespace ReqTools
 
             this.TCs.AddRange(TCs);
             TCIDsValue = TCs.Select(x => x.IDValue).ToHashSet();
+
+            IsVisible = true;
         }
 
         public bool IsValidInSpecifiedVersion(string version)

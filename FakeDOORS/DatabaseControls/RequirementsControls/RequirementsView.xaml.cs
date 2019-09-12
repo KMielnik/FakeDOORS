@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using FakeDOORS.DatabaseControls.RequirementsControls;
 using System.Linq;
+using FakeDOORS.DatabaseControls.RequirementsControls.Converters;
 
 namespace FakeDOORS
 {
@@ -25,12 +26,17 @@ namespace FakeDOORS
     public partial class RequirementsView : UserControl
     {
         public ObservableCollection<Requirement> Requirements { get; set; } = new ObservableCollection<Requirement>();
-        private HashSet<TestCase> SelectedTestCases = new HashSet<TestCase>();
+        private HashSet<int> SelectedTestCases = new HashSet<int>();
+
+        public ObservableCollection<Dictionary<int, int>> ReqTopHelperData { get; set; } = new ObservableCollection<Dictionary<int, int>>
+                { new Dictionary<int, int>()};
+        public ObservableCollection<Dictionary<int, int>> ReqBottomHelperData { get; set; } = new ObservableCollection<Dictionary<int, int>>
+                { new Dictionary<int, int>()};
+
         private IDatabaseService databaseService;
 
         private int actualBrush = 0;
         private Brush[] brushes = {
-            GetBrushFromHex("#e6194B"),
             GetBrushFromHex("#3cb44b"),
             GetBrushFromHex("#ffe119"),
             GetBrushFromHex("#4363d8"),
@@ -47,52 +53,60 @@ namespace FakeDOORS
         private static SolidColorBrush GetBrushFromHex(string hex)
             => (SolidColorBrush)new BrushConverter().ConvertFrom(hex);
 
-        public RequirementsView()
+        public RequirementsView(IDatabaseService databaseService)
         {
             InitializeComponent();
 
-            databaseService = App.ServiceProvider.GetService<IDatabaseService>();
+            this.databaseService = databaseService;
             databaseService.RequirementsChanged += DatabaseService_RequirementsChanged;
+        }
+
+        private void AddNormalColumn(string header, int width, Binding binding)
+        {
+            ReqDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = header,
+                Binding = binding,
+                IsReadOnly = true,
+                Width = width
+            });
+            ReqHelperTop.Columns.Add(new DataGridTextColumn
+            {
+                Header = header,
+                Width = width,
+                IsReadOnly = true
+            });
+            ReqHelperBottom.Columns.Add(new DataGridTextColumn
+            {
+                Header = header,
+                Width = width,
+                IsReadOnly = true
+            });
         }
 
         public void SetReqView(ReqViewSettings settings)
         {
             ReqDataGrid.RowStyle = new Style();
             ReqDataGrid.Columns.Clear();
+            ReqHelperTop.Columns.Clear();
+            ReqHelperBottom.Columns.Clear();
 
             foreach (var setting in settings)
                 switch (setting)
                 {
                     case ReqViewSettings.SettingTypes.IDColumn:
                         {
-                            ReqDataGrid.Columns.Add(new DataGridTextColumn
-                            {
-                                Header = "ID",
-                                Binding = new Binding(nameof(Requirement.ID)),
-                                IsReadOnly = true
-                            });
+                            AddNormalColumn("ID", 100, new Binding(nameof(Requirement.ID)));
                             break;
                         }
                     case ReqViewSettings.SettingTypes.TextColumn:
                         {
-                            ReqDataGrid.Columns.Add(new DataGridTextColumn
-                            {
-                                Header = "Text",
-                                Binding = new Binding(nameof(Requirement.TextIntended)),
-                                IsReadOnly = true,
-                                Width = 500
-                            });
+                            AddNormalColumn("Text", 500, new Binding(nameof(Requirement.TextIntended)));
                             break;
                         }
                     case ReqViewSettings.SettingTypes.FVariant:
                         {
-                            ReqDataGrid.Columns.Add(new DataGridTextColumn
-                            {
-                                Header = "Functional Variants",
-                                Binding = new Binding(nameof(Requirement.FVariants)),
-                                IsReadOnly = true,
-                                Width = 200
-                            });
+                            AddNormalColumn("Functional Variants", 200, new Binding(nameof(Requirement.FVariants)));
                             break;
                         }
 
@@ -116,22 +130,62 @@ namespace FakeDOORS
                 }
         }
 
-        public async Task AddTestCasesToView(List<TestCase> testCases)
+        public async Task SetSelectedTestCases(List<int> testCases)
         {
             var newTestCases = testCases
-                .Where(x => !SelectedTestCases.Contains(x))
-                .Select(x => x.IDValue);
+                .Except(SelectedTestCases)
+                .ToList();
 
-            foreach(var tc in newTestCases)
+            var deletedTestCases = SelectedTestCases
+                .Except(testCases)
+                .ToList();
+
+            var deletingTasks = new List<Task>();
+            foreach (int TCSelected in deletedTestCases)
             {
-                var TCColumn = GenerateTCColumn(tc);
-
-                await Task.Run(async () =>
-                    await ReqDataGrid.Dispatcher.BeginInvoke((Action)(() => ReqDataGrid.Columns.Add(TCColumn))));
+                SelectedTestCases.Remove(TCSelected);
+                deletingTasks.Add(DeleteTCColumn(TCSelected));
             }
+
+            var addingTasks = new List<Task>();
+            foreach (var tc in newTestCases)
+            {
+                SelectedTestCases.Add(tc);
+                addingTasks.Add(AddTCColumn(tc));
+            }
+
+            await Task.WhenAll(deletingTasks);
+            await Task.WhenAll(addingTasks);
+
+            await RefreshHelpers();
+        }
+        private async Task DeleteTCColumn(int tc)
+        {
+            var removedReqColumn = ReqDataGrid.Columns
+                       .FirstOrDefault(x => x.Header is int && (int)x.Header == tc);
+            var removedTopColumn = ReqHelperTop.Columns
+                       .FirstOrDefault(x => x.Header is int && (int)x.Header == tc);
+            var removedBottomColumn = ReqHelperBottom.Columns
+                       .FirstOrDefault(x => x.Header is int && (int)x.Header == tc);
+
+            ReqTopHelperData[0].Remove(tc);
+            ReqBottomHelperData[0].Remove(tc);
+
+
+            await Task.Run(async () =>
+            {
+                if (removedReqColumn != null)
+                    await ReqDataGrid.Dispatcher.BeginInvoke((Action)(() => ReqDataGrid.Columns.Remove(removedReqColumn)));
+
+                if (removedTopColumn != null)
+                    await ReqHelperTop.Dispatcher.BeginInvoke((Action)(() => ReqHelperTop.Columns.Remove(removedTopColumn)));
+
+                if (removedBottomColumn != null)
+                    await ReqHelperBottom.Dispatcher.BeginInvoke((Action)(() => ReqHelperBottom.Columns.Remove(removedBottomColumn)));
+            });
         }
 
-        private DataGridTextColumn GenerateTCColumn(int tc)
+        private DataGridTextColumn GenerateTCColumn(int tc, Brush color)
         {
             DataGridTextColumn TCColumn = new DataGridTextColumn
             {
@@ -148,19 +202,19 @@ namespace FakeDOORS
             dataTrigger.Setters.Add(new Setter()
             {
                 Property = BackgroundProperty,
-                Value = brushes[actualBrush % brushes.Length]
+                Value = color
             });
 
             dataTrigger.Setters.Add(new Setter()
             {
                 Property = ForegroundProperty,
-                Value = brushes[actualBrush % brushes.Length]
+                Value = color
             });
 
             dataTrigger.Setters.Add(new Setter()
             {
                 Property = BorderBrushProperty,
-                Value = brushes[actualBrush++ % brushes.Length]
+                Value = color
             });
 
             TCColumn.CellStyle = new Style();
@@ -183,10 +237,122 @@ namespace FakeDOORS
             TCColumn.HeaderStyle.Setters.Add(new Setter()
             {
                 Property = ToolTipProperty,
-                Value = SelectedTestCases.First(x => x.IDValue == tc).Text
+                Value = databaseService.GetTestCaseText(tc)
             });
 
             return TCColumn;
+        }
+        private DataGridTextColumn GenerateTCHelperColumn(int tc, Brush color)
+        {
+            var helperColumn = new DataGridTextColumn
+            {
+                Header = tc,
+                Binding = new Binding($"[{tc}]"),
+                IsReadOnly = true
+            };
+
+            var dataTrigger = new DataTrigger()
+            {
+                Binding = new Binding("[" + tc + "]") { Converter = new GreaterThanConverter() },
+                Value = true
+            };
+            dataTrigger.Setters.Add(new Setter()
+            {
+                Property = BorderBrushProperty,
+                Value = Brushes.Black
+            });
+            dataTrigger.Setters.Add(new Setter()
+            {
+                Property = BackgroundProperty,
+                Value = color
+            });
+
+            var eventTrigger = new EventSetter()
+            {
+                Event = PreviewMouseLeftButtonDownEvent,
+                Handler = new MouseButtonEventHandler(Helper_LeftClickEvent)
+            };
+
+            helperColumn.CellStyle = new Style();
+            helperColumn.CellStyle.Triggers.Add(dataTrigger);
+            helperColumn.CellStyle.Setters.Add(eventTrigger);
+
+            return helperColumn;
+        }
+
+        private void Helper_LeftClickEvent(object sender, MouseButtonEventArgs e)
+        {
+            var gridCell = (DataGridCell)sender;
+            var tc = (int)gridCell.Column.Header;
+
+            var senderDatagrid = VisualTreeHelper.GetParent(gridCell);
+            while (senderDatagrid != null && senderDatagrid.GetType() != typeof(DataGrid))
+                senderDatagrid = VisualTreeHelper.GetParent(senderDatagrid);
+
+            var isGoingDown = ((DataGrid)senderDatagrid).Name == nameof(ReqHelperBottom);
+
+            var selectedRows = ReqDataGrid.SelectedItems.Count;
+
+            if (selectedRows >= 1)
+            {
+                var firstSelected = (Requirement)ReqDataGrid.SelectedItems[0];
+                ReqDataGrid.SelectedItems.Clear();
+
+                if (firstSelected.TCIDsValue.Contains(tc))
+                    ReqDataGrid.SelectedItems.Add(firstSelected);
+                else
+                {
+                    ReqDataGrid.SelectedItems.Add(ReqDataGrid.Items.Cast<Requirement>().First(x => x.TCIDsValue.Contains(tc) && x.IsVisible));
+                    ReqDataGrid.ScrollIntoView(firstSelected);
+                    return;
+                }
+
+                ReqDataGrid.ScrollIntoView(firstSelected);
+
+                if (selectedRows > 1)
+                    return;
+
+
+                ReqDataGrid.SelectedItems.Clear();
+                var reqs = ReqDataGrid.Items.Cast<Requirement>().AsEnumerable();
+                if (isGoingDown == false)
+                    reqs = reqs.Reverse();
+
+                ReqDataGrid.SelectedItems
+                    .Add(reqs
+                        .SkipWhile(x => x != firstSelected)
+                        .Skip(1)
+                        .FirstOrDefault(x => x.TCIDsValue.Contains(tc) && x.IsVisible));
+
+                if (ReqDataGrid.SelectedItem == null)
+                    ReqDataGrid.SelectedItems.Add(firstSelected);
+
+                ReqDataGrid.ScrollIntoView(ReqDataGrid.SelectedItem);
+            }
+            else
+            {
+                ReqDataGrid.SelectedItems.Add(ReqDataGrid.Items.Cast<Requirement>().First(x => x.TCIDsValue.Contains(tc) && x.IsVisible));
+                ReqDataGrid.ScrollIntoView((Requirement)ReqDataGrid.SelectedItems[0]);
+            }
+        }
+
+        private async Task AddTCColumn(int tc)
+        {
+            var color = brushes[actualBrush++ % brushes.Length];
+
+            var TCColumn = GenerateTCColumn(tc, color);
+            var topHelperColumn = GenerateTCHelperColumn(tc, color);
+            var bottomHelperColumn = GenerateTCHelperColumn(tc, color);
+
+            ReqTopHelperData[0].Add(tc, 0);
+            ReqBottomHelperData[0].Add(tc, 0);
+
+            await Task.Run(async () =>
+                    await ReqDataGrid.Dispatcher.BeginInvoke((Action)(() => ReqDataGrid.Columns.Add(TCColumn))))
+                .ContinueWith(s => Task.Run(async () =>
+                      await ReqHelperTop.Dispatcher.BeginInvoke((Action)(() => ReqHelperTop.Columns.Add(topHelperColumn)))))
+                .ContinueWith(s => Task.Run(async () =>
+                      await ReqHelperBottom.Dispatcher.BeginInvoke((Action)(() => ReqHelperBottom.Columns.Add(bottomHelperColumn)))));
         }
 
         private void ColumnHeader_RightClickEvent(object sender, MouseButtonEventArgs e)
@@ -238,25 +404,137 @@ namespace FakeDOORS
             RefreshRequirements();
         }
 
-        private void ReqDataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        public static ScrollViewer GetScrollViewer(UIElement element)
         {
+            if (element == null) return null;
 
+            ScrollViewer retour = null;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element) && retour == null; i++)
+                if (VisualTreeHelper.GetChild(element, i) is ScrollViewer)
+                    retour = (ScrollViewer)(VisualTreeHelper.GetChild(element, i));
+                else
+                    retour = GetScrollViewer(VisualTreeHelper.GetChild(element, i) as UIElement);
+
+            return retour;
+        }
+
+        private async Task RefreshHelpers()
+        {
+            await RefreshHelpers(true, true,
+                GetScrollViewer(ReqDataGrid).HorizontalOffset,
+                GetScrollViewer(ReqDataGrid).VerticalOffset);
+        }
+
+        private async Task RefreshHelpers(bool horizontalRefresh, bool verticalRefresh, double horizontalOffset, double verticalOffset, double verticalChange = 0)
+        {
+            if (horizontalRefresh)
+            {
+                new List<ScrollViewer>()
+                {
+                    GetScrollViewer(ReqHelperTop),
+                    GetScrollViewer(ReqHelperBottom)
+                }.ForEach(x => x.ScrollToHorizontalOffset(horizontalOffset));
+            }
+
+            if (verticalRefresh)
+            {
+                var datagridHeight = ReqDataGrid.ActualHeight;
+                var rowHeight = ReqDataGrid.RowHeight;
+                var firstRow = (int)verticalOffset;
+                var lastRow = firstRow + (int)(datagridHeight / rowHeight);
+
+                if (Requirements.AsParallel().Any(x => x.IsVisible == false))
+                {
+                    var firstVisible = ReqDataGrid.Items
+                        .IndexOf(ReqDataGrid.Items.Cast<Requirement>()
+                            .First(x => x.IsVisible == true));
+                    var lastVisible = ReqDataGrid.Items
+                        .IndexOf(ReqDataGrid.Items.Cast<Requirement>()
+                            .Last(x => x.IsVisible == true));
+
+                    if (lastVisible < lastRow)
+                        lastRow = lastVisible + 1;
+
+                    if (verticalChange < 0 && firstRow < firstVisible)
+                    {
+                        var scrollViewer = GetScrollViewer(ReqDataGrid);
+                        scrollViewer.ScrollToVerticalOffset(firstVisible);
+                    }
+                    else if (verticalChange > 0 && lastVisible < firstRow)
+                    {
+                        var scrollViewer = GetScrollViewer(ReqDataGrid);
+                        scrollViewer.ScrollToVerticalOffset(lastVisible);
+                    }
+                }
+
+                    var selectedTCs = new List<int>();
+                foreach (int TC in SelectedTestCases)
+                    selectedTCs.Add(TC);
+
+
+                Parallel.ForEach(selectedTCs, TCSelected =>
+                {
+                    if (ReqTopHelperData[0].ContainsKey(TCSelected))
+                    {
+                        ReqTopHelperData[0][TCSelected] = ReqDataGrid.Items.Cast<Requirement>()
+                            .Take(firstRow)
+                            .Where(x => x.TCIDsValue.Contains(TCSelected))
+                            .Count();
+                    }
+
+                    if (ReqBottomHelperData[0].ContainsKey(TCSelected))
+                    {
+                        ReqBottomHelperData[0][TCSelected] = ReqDataGrid.Items.Cast<Requirement>()
+                            .Skip(lastRow)
+                            .Where(x => x.TCIDsValue.Contains(TCSelected))
+                            .Count();
+                    }
+                });
+
+            }
+            ReqDataGrid.UpdateLayout();
+            ReqHelperTop.Items.Refresh();
+            ReqHelperBottom.Items.Refresh();
+        }
+
+        private async void ReqDataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            await RefreshHelpers(e.HorizontalChange != 0, e.VerticalChange != 0, e.HorizontalOffset, e.VerticalOffset, e.VerticalChange);
         }
 
         private void ReqDataGrid_LayoutUpdated(object sender, EventArgs e)
         {
-
+            for (int i = 0; i < ReqDataGrid.Columns.Count; i++)
+            {
+                if (i < ReqHelperTop.Columns.Count)
+                {
+                    ReqHelperTop.Columns[i].Width = ReqDataGrid.Columns[i].Width;
+                    ReqHelperBottom.Columns[i].Width = ReqDataGrid.Columns[i].Width;
+                }
+            }
         }
 
         private void ReqDataGrid_ColumnDisplayIndexChanged(object sender, DataGridColumnEventArgs e)
         {
+            var topHelper = ReqHelperTop.Columns
+                .FirstOrDefault(x => x.Header.ToString() == e.Column.Header.ToString());
 
+            if (topHelper != null)
+                topHelper.DisplayIndex = e.Column.DisplayIndex;
+
+            var bottomHelper = ReqHelperBottom.Columns
+                .FirstOrDefault(x => x.Header.ToString() == e.Column.Header.ToString());
+
+            if (bottomHelper != null)
+                bottomHelper.DisplayIndex = e.Column.DisplayIndex;
         }
 
         private void Helper_GotFocus(object sender, RoutedEventArgs e)
         {
+            var helper = (DataGrid)sender;
+            helper.SelectedItems.Clear();
 
+            ReqDataGrid.Focus();
         }
-
     }
 }

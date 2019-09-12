@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using ReqTools;
+using FakeDOORS.DatabaseControls.TestCasesControls;
 
 namespace FakeDOORS
 {
@@ -38,6 +39,9 @@ namespace FakeDOORS
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddScoped<IReqParser, ReqParser>();
             services.AddTransient<MainWindow>();
+            services.AddTransient<DatabaseView>();
+            services.AddTransient<RequirementsView>();
+            services.AddTransient<TestCasesView>();
         }
     }
 }
