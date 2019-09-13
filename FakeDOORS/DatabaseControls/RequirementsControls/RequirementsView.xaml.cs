@@ -185,11 +185,12 @@ namespace FakeDOORS
             });
         }
 
-        private DataGridTextColumn GenerateTCColumn(int tc, Brush color)
+        private DataGridTextColumn GenerateTCColumn(int tc, Brush color, int width)
         {
             DataGridTextColumn TCColumn = new DataGridTextColumn
             {
                 Header = tc,
+                Width = width,
                 IsReadOnly = true
             };
 
@@ -222,6 +223,12 @@ namespace FakeDOORS
 
             TCColumn.HeaderStyle = new Style();
 
+            TCColumn.HeaderStyle.Setters.Add(new Setter()
+            {
+                Property=HorizontalAlignmentProperty,
+                Value=HorizontalAlignment.Stretch
+            });
+
             TCColumn.HeaderStyle.Setters.Add(new EventSetter()
             {
                 Event = MouseDoubleClickEvent,
@@ -242,12 +249,13 @@ namespace FakeDOORS
 
             return TCColumn;
         }
-        private DataGridTextColumn GenerateTCHelperColumn(int tc, Brush color)
+        private DataGridTextColumn GenerateTCHelperColumn(int tc, Brush color, int width)
         {
             var helperColumn = new DataGridTextColumn
             {
                 Header = tc,
                 Binding = new Binding($"[{tc}]"),
+                Width = width,
                 IsReadOnly = true
             };
 
@@ -340,9 +348,11 @@ namespace FakeDOORS
         {
             var color = brushes[actualBrush++ % brushes.Length];
 
-            var TCColumn = GenerateTCColumn(tc, color);
-            var topHelperColumn = GenerateTCHelperColumn(tc, color);
-            var bottomHelperColumn = GenerateTCHelperColumn(tc, color);
+            const int width = 45;
+
+            var TCColumn = GenerateTCColumn(tc, color, width);
+            var topHelperColumn = GenerateTCHelperColumn(tc, color, width);
+            var bottomHelperColumn = GenerateTCHelperColumn(tc, color, width);
 
             ReqTopHelperData[0].Add(tc, 0);
             ReqBottomHelperData[0].Add(tc, 0);
