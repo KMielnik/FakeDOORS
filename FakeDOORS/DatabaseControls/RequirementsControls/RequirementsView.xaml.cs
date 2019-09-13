@@ -122,6 +122,22 @@ namespace FakeDOORS
                             break;
                         }
                 }
+
+            #region always_on_filters
+            var visibilityTrigger = new DataTrigger()
+            {
+                Binding = new Binding(nameof(Requirement.IsVisible)),
+                Value = false
+            };
+
+            visibilityTrigger.Setters.Add(new Setter()
+            {
+                Property = VisibilityProperty,
+                Value = Visibility.Hidden
+            });
+
+            ReqDataGrid.RowStyle.Triggers.Add(visibilityTrigger);
+            #endregion
         }
 
         public async Task SetSelectedTestCases(List<int> testCases)
@@ -152,7 +168,32 @@ namespace FakeDOORS
             await Task.WhenAll(addingTasks);
 
             await RefreshHelpers();
+            await Task.Delay(500);
+            FixHelpersOrder();
         }
+
+        private void FixHelpersOrder()
+        {
+            var firstTCColumnIndex = ReqDataGrid.Columns
+                .TakeWhile(x => !(x.Header is int))
+                .Count();
+
+            for (int i = firstTCColumnIndex; i < ReqDataGrid.Columns.Count; i++)
+            {
+                var columnTCValue = (int)ReqDataGrid.Columns[i].Header;
+                var topColumn = ReqHelperTop.Columns
+                    ?.FirstOrDefault(x => x.Header is int && (int)x.Header == columnTCValue);
+                var bottomColumn = ReqHelperBottom.Columns
+                    ?.FirstOrDefault(x => x.Header is int && (int)x.Header == columnTCValue);
+
+                if (topColumn != null && bottomColumn != null)
+                {
+                    topColumn.DisplayIndex = ReqDataGrid.Columns[i].DisplayIndex;
+                    bottomColumn.DisplayIndex = ReqDataGrid.Columns[i].DisplayIndex;
+                }
+            }
+        }
+
         private async Task DeleteTCColumn(int tc)
         {
             var removedReqColumn = ReqDataGrid.Columns
@@ -353,9 +394,9 @@ namespace FakeDOORS
 
             await Task.Run(async () =>
                     await ReqDataGrid.Dispatcher.BeginInvoke((Action)(() => ReqDataGrid.Columns.Add(TCColumn))))
-                .ContinueWith(s => Task.Run(async () =>
+                .ContinueWith(async s => await Task.Run(async () =>
                       await ReqHelperTop.Dispatcher.BeginInvoke((Action)(() => ReqHelperTop.Columns.Add(topHelperColumn)))))
-                .ContinueWith(s => Task.Run(async () =>
+                .ContinueWith(async s => await Task.Run(async () =>
                       await ReqHelperBottom.Dispatcher.BeginInvoke((Action)(() => ReqHelperBottom.Columns.Add(bottomHelperColumn)))));
         }
 
@@ -451,10 +492,10 @@ namespace FakeDOORS
                 {
                     var firstVisible = ReqDataGrid.Items
                         .IndexOf(ReqDataGrid.Items.Cast<Requirement>()
-                            .First(x => x.IsVisible == true));
+                        .First(x => x.IsVisible == true));
                     var lastVisible = ReqDataGrid.Items
                         .IndexOf(ReqDataGrid.Items.Cast<Requirement>()
-                            .Last(x => x.IsVisible == true));
+                        .Last(x => x.IsVisible == true));
 
                     if (lastVisible < lastRow)
                         lastRow = lastVisible + 1;
@@ -539,6 +580,29 @@ namespace FakeDOORS
             helper.SelectedItems.Clear();
 
             ReqDataGrid.Focus();
+        }
+
+        public void LimitScrollingToOneChapter(int chapter)
+        {
+            foreach (var req in Requirements)
+                req.IsVisible = true;
+
+            if (chapter == 0)
+            {
+                ReqDataGrid.Items.Refresh();
+                return;
+            }
+
+            var visibleReqs = databaseService.GetRequirementsFromChapter(chapter);
+            Requirements
+                .Except(visibleReqs)
+                .ToList()
+                .ForEach(x => x.IsVisible = false);
+
+            var scrollViewer = GetScrollViewer(ReqDataGrid);
+            scrollViewer.ScrollToVerticalOffset(ReqDataGrid.Items.IndexOf(visibleReqs.FirstOrDefault()));
+
+            ReqDataGrid.Items.Refresh();
         }
     }
 }

@@ -4,6 +4,7 @@ using FakeDOORS.DatabaseControls.TestCasesControls;
 using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,7 +43,6 @@ namespace FakeDOORS
         private void TestCasesViewInit()
         {
             testCasesView = App.ServiceProvider.GetRequiredService<ITestCasesView>();
-
             testCasesView.SelectionChanged += TestCasesView_SelectionChanged;
 
             TestCasesViewControl.Content = testCasesView;
@@ -51,11 +51,26 @@ namespace FakeDOORS
         {
             chapterSelectionView = App.ServiceProvider.GetRequiredService<IChapterSelectionView>();
             chapterSelectionView.SelectionChanged += ChapterSelectionView_SelectionChanged;
+
+            ChapterSelectionViewControl.Content = chapterSelectionView;
         }
 
         private void ChapterSelectionView_SelectionChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if(chapterSelectionView.SelectedChapter.chapter == "-")
+                requirementsView.LimitScrollingToOneChapter(0);
+            else
+            {
+                if (chapterSelectionView.ClearAllTCs)
+                    testCasesView.SetSelectedTCs(new List<int>());
+                if (chapterSelectionView.SelectChaptersTCs)
+                    testCasesView.SetSelectedTCs(databaseService
+                        .GetTestCasesFromChapter(chapterSelectionView.SelectedChapter.id)
+                        .Select(x => x.IDValue)
+                        .ToList());
+
+                requirementsView.LimitScrollingToOneChapter(chapterSelectionView.SelectedChapter.id);
+            }
         }
 
         private async void TestCasesView_SelectionChanged(object sender, EventArgs e)

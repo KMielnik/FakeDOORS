@@ -95,6 +95,24 @@ namespace ReqTools
                 .Where(x => x.Type == Requirement.Types.Head)
                 .Select(x => (chapter: Regex.Match(x.Text, @"^\d+\.[\d.]+").Value, id: x.IDValue))
                 .Where(x => !string.IsNullOrWhiteSpace(x.chapter));
-        
+
+        public IEnumerable<Requirement> GetRequirementsFromChapter(int chapter)
+        {
+            var firstChapterReq = GetRequirements()
+                .SkipWhile(x => x.IDValue != chapter)
+                .FirstOrDefault();
+
+            var chapterLevel = firstChapterReq
+                ?.Level;
+
+            return GetRequirements()
+                      .SkipWhile(x => x.IDValue != chapter)
+                      .TakeWhile(x => x.Level > chapterLevel || x.IDValue == chapter);
+        }
+
+        public IEnumerable<TestCase> GetTestCasesFromChapter(int chapter)
+        => GetRequirementsFromChapter(chapter)
+                .SelectMany(x => x.TCs)
+                .Distinct();
     }
 }

@@ -9,6 +9,7 @@ namespace FakeDOORS
     {
         void SetReqView(ReqViewSettings settings);
         Task SetSelectedTestCases(List<int> testCases);
+        void LimitScrollingToOneChapter(int chapter);
         event RoutedEventHandler Loaded;
     }
 }

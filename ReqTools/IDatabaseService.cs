@@ -13,6 +13,8 @@ namespace ReqTools
         Task<List<TestCase>> GetTestCases();
 
         IEnumerable<(string, int)> GetChapters();
+        IEnumerable<Requirement> GetRequirementsFromChapter(int chapter);
+        IEnumerable<TestCase> GetTestCasesFromChapter(int chapter);
         string GetTestCaseText(int tc);
         Task<bool> CheckForUpdates();
         Task DownloadNewestVersion();
