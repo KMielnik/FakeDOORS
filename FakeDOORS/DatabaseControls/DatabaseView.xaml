@@ -11,8 +11,17 @@
             <ColumnDefinition Width="1*" MaxWidth="165"/>
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="65"/>
+            </Grid.RowDefinitions>
+
+            <ContentControl Grid.Row="0" Name="TestCasesViewControl"/>
+            <ContentControl Grid.Row="1" Name="ChapterSelectionViewControl"/>
+        </Grid>
         
-        <ContentControl Grid.Column="0" Name="TestCasesViewControl"/>
         <ContentControl Grid.Column="1" Name="RequirementsViewControl"/>
     </Grid>
 </UserControl>

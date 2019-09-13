@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FakeDOORS.DatabaseControls.RequirementsControls
+﻿namespace FakeDOORS.DatabaseControls.RequirementsControls
 {
     public class ReqViewSettingsBuilder
     {

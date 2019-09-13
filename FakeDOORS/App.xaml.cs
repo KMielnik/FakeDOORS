@@ -1,15 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using ReqTools;
+﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using ReqTools;
+using System;
+using System.IO;
+using System.Windows;
 
 namespace FakeDOORS
 {
@@ -39,9 +35,10 @@ namespace FakeDOORS
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddScoped<IReqParser, ReqParser>();
             services.AddTransient<MainWindow>();
-            services.AddTransient<DatabaseView>();
-            services.AddTransient<RequirementsView>();
-            services.AddTransient<TestCasesView>();
+            services.AddTransient<IDatabaseView, DatabaseView>();
+            services.AddTransient<IRequirementsView, RequirementsView>();
+            services.AddTransient<ITestCasesView, TestCasesView>();
+            services.AddTransient<IChapterSelectionView, ChapterSelectionView>();
         }
     }
 }

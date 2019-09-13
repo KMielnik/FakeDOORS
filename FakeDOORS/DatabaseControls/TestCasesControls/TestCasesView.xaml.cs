@@ -1,28 +1,20 @@
 ﻿using ReqTools;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
 
 namespace FakeDOORS.DatabaseControls.TestCasesControls
 {
     /// <summary>
     /// Interaction logic for TestCasesView.xaml
     /// </summary>
-    public partial class TestCasesView : UserControl
+    public partial class TestCasesView : UserControl, ITestCasesView
     {
         public ObservableCollection<int> TestCases { get; set; } = new ObservableCollection<int>();
 
@@ -76,7 +68,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
         {
             TestCases.Clear();
             (await databaseService.GetTestCases())
-                .Select(x=>x.IDValue)
+                .Select(x => x.IDValue)
                 .ToList()
                 .ForEach(x => TestCases.Add(x));
         }
@@ -135,7 +127,6 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
 
             SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
-
 
         private bool isUserInteraction = false;
         private void AllTCsListBox_MouseDown(object sender, MouseButtonEventArgs e)

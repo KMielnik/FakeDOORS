@@ -1,30 +1,23 @@
-﻿using FakeDOORS.DatabaseControls.RequirementsControls;
+﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
+using FakeDOORS.DatabaseControls.RequirementsControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
+using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
 
 namespace FakeDOORS
 {
     /// <summary>
     /// Interaction logic for DatabaseView.xaml
     /// </summary>
-    public partial class DatabaseView : UserControl
+    public partial class DatabaseView : UserControl, IDatabaseView
     {
-        private RequirementsView requirementsView;
-        private TestCasesView testCasesView;
+        private IRequirementsView requirementsView;
+        private ITestCasesView testCasesView;
+        private IChapterSelectionView chapterSelectionView;
 
         private IDatabaseService databaseService;
 
@@ -34,16 +27,35 @@ namespace FakeDOORS
 
             this.databaseService = databaseService;
 
-            requirementsView = App.ServiceProvider.GetRequiredService<RequirementsView>();
+            RequirementViewInit();
+            TestCasesViewInit();
+            ChapterSelectionViewInit();
+        }
+
+        private void RequirementViewInit()
+        {
+            requirementsView = App.ServiceProvider.GetRequiredService<IRequirementsView>();
             requirementsView.Loaded += RequirementsView_Loaded;
 
             RequirementsViewControl.Content = requirementsView;
-
-            testCasesView = App.ServiceProvider.GetRequiredService<TestCasesView>();
+        }
+        private void TestCasesViewInit()
+        {
+            testCasesView = App.ServiceProvider.GetRequiredService<ITestCasesView>();
 
             testCasesView.SelectionChanged += TestCasesView_SelectionChanged;
 
             TestCasesViewControl.Content = testCasesView;
+        }
+        private void ChapterSelectionViewInit()
+        {
+            chapterSelectionView = App.ServiceProvider.GetRequiredService<IChapterSelectionView>();
+            chapterSelectionView.SelectionChanged += ChapterSelectionView_SelectionChanged;
+        }
+
+        private void ChapterSelectionView_SelectionChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void TestCasesView_SelectionChanged(object sender, EventArgs e)

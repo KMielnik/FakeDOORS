@@ -1,29 +1,23 @@
-﻿using ReqTools;
+﻿using FakeDOORS.DatabaseControls.RequirementsControls;
+using FakeDOORS.DatabaseControls.RequirementsControls.Converters;
+using ReqTools;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using FakeDOORS.DatabaseControls.RequirementsControls;
-using System.Linq;
-using FakeDOORS.DatabaseControls.RequirementsControls.Converters;
 
 namespace FakeDOORS
 {
     /// <summary>
     /// Interaction logic for RequirementsView.xaml
     /// </summary>
-    public partial class RequirementsView : UserControl
+    public partial class RequirementsView : UserControl, IRequirementsView
     {
         public ObservableCollection<Requirement> Requirements { get; set; } = new ObservableCollection<Requirement>();
         private HashSet<int> SelectedTestCases = new HashSet<int>();
@@ -225,8 +219,8 @@ namespace FakeDOORS
 
             TCColumn.HeaderStyle.Setters.Add(new Setter()
             {
-                Property=HorizontalAlignmentProperty,
-                Value=HorizontalAlignment.Stretch
+                Property = HorizontalAlignmentProperty,
+                Value = HorizontalAlignment.Stretch
             });
 
             TCColumn.HeaderStyle.Setters.Add(new EventSetter()
@@ -477,7 +471,7 @@ namespace FakeDOORS
                     }
                 }
 
-                    var selectedTCs = new List<int>();
+                var selectedTCs = new List<int>();
                 foreach (int TC in SelectedTestCases)
                     selectedTCs.Add(TC);
 

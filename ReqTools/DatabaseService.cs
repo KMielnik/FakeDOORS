@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReqTools
@@ -88,5 +89,12 @@ namespace ReqTools
                 .First(x => x.IDValue == tc)
                 .Text;
         }
+
+        public IEnumerable<(string, int)> GetChapters()
+        => GetRequirements()
+                .Where(x => x.Type == Requirement.Types.Head)
+                .Select(x => (chapter: Regex.Match(x.Text, @"^\d+\.[\d.]+").Value, id: x.IDValue))
+                .Where(x => !string.IsNullOrWhiteSpace(x.chapter));
+        
     }
 }

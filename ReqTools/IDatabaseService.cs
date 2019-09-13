@@ -11,6 +11,8 @@ namespace ReqTools
         Task Init(string versionFilter = "-");
         List<Requirement> GetRequirements();
         Task<List<TestCase>> GetTestCases();
+
+        IEnumerable<(string, int)> GetChapters();
         string GetTestCaseText(int tc);
         Task<bool> CheckForUpdates();
         Task DownloadNewestVersion();
