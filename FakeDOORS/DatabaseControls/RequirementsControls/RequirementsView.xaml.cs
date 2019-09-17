@@ -101,7 +101,7 @@ namespace FakeDOORS
                             AddNormalColumn("Text", 500, new Binding(nameof(Requirement.TextIntended)));
                             break;
                         }
-                    case ReqViewSettings.SettingTypes.FVariant:
+                    case ReqViewSettings.SettingTypes.FVariantColumn:
                         {
                             AddNormalColumn("Functional Variants", 200, new Binding(nameof(Requirement.FVariants)));
                             break;
@@ -122,6 +122,12 @@ namespace FakeDOORS
                             });
 
                             ReqDataGrid.RowStyle.Triggers.Add(dataTrigger);
+                            break;
+                        }
+
+                    case ReqViewSettings.SettingTypes.StatusColumn:
+                        {
+                            AddNormalColumn("Status", 80, new Binding(nameof(Requirement.Status)));
                             break;
                         }
                 }

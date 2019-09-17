@@ -48,7 +48,7 @@ namespace FakeDOORS
         {
             chapterSelectionView.ResetView();
             databaseService.ChangeVersionFilter(e.NewFilterVersion);
-            requirementsView.SetSelectedTestCases(new List<int>());
+            requirementsView.SetReqView(e.Settings);
         }
 
         private void RequirementViewInit()
@@ -110,13 +110,7 @@ namespace FakeDOORS
 
         private async void RequirementsView_Loaded(object sender, RoutedEventArgs e)
         {
-            var loadingReqsTask = databaseService.Init();
-            var settings = new ReqViewSettingsBuilder()
-                .AddDefaultSettings()
-                .Build();
-
-            requirementsView.SetReqView(settings);
-            await loadingReqsTask;
+            await databaseService.Init();
         }
     }
 }

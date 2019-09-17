@@ -10,7 +10,8 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
         {
             IDColumn,
             TextColumn,
-            FVariant,
+            FVariantColumn,
+            StatusColumn,
             BoldHeaders
         }
 

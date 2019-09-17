@@ -1,4 +1,5 @@
-﻿using ReqTools;
+﻿using FakeDOORS.DatabaseControls.RequirementsControls;
+using ReqTools;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,24 +26,63 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
             InitializeComponent();
 
             this.databaseService = databaseService;
+
+
         }
 
         public event EventHandler<ViewSettingsEventArgs> ViewSettingsChanged;
 
-        private void ValidIn_Loaded(object sender, RoutedEventArgs e)
+        private ViewSettingsEventArgs GetEventArgs()
         {
-            ValidIn.SelectedIndex = 0;
-            ValidIn.UpdateLayout();
+            var reqViewSettings = new ReqViewSettingsBuilder();
+
+            foreach(ListBoxItem column in ColumnsSelectionListBox.SelectedItems)
+            {
+                switch(column.Content.ToString())
+                {
+                    case "ID":
+                        reqViewSettings = reqViewSettings.AddIDColumn();
+                        break;
+
+                    case "Text":
+                        reqViewSettings = reqViewSettings.AddTextColumn();
+                        break;
+
+                    case "Functional Variants":
+                        reqViewSettings = reqViewSettings.AddFVariantsColumn();
+                        break;
+
+                    case "Status":
+                        reqViewSettings = reqViewSettings.AddStatusColumn();
+                        break;
+                }
+            }
+
+            foreach (ListBoxItem column in MiscSettingsSelectionListBox.SelectedItems)
+            {
+                switch (column.Content.ToString())
+                {
+                    case "Bold Headers":
+                        reqViewSettings = reqViewSettings.SetBoldHeaders();
+                        break;
+                }
+            }
+
+            return new ViewSettingsEventArgs()
+            {
+                NewFilterVersion = ValidIn.SelectedItem is null ? "-" : (ValidIn.SelectedItem as ComboBoxItem).Content.ToString(),
+                Settings = reqViewSettings.Build()
+            };
         }
 
-        private void ValidIn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void SetSettings_Click(object sender, RoutedEventArgs e)
         {
-            var eventArgs = new ViewSettingsEventArgs()
-            {
-                NewFilterVersion = (e.AddedItems[0] as ComboBoxItem).Content.ToString()
-            };
+            ViewSettingsChanged?.Invoke(this, GetEventArgs());
+        }
 
-            ViewSettingsChanged?.Invoke(this, eventArgs);
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewSettingsChanged?.Invoke(this, GetEventArgs());
         }
     }
 }

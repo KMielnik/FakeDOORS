@@ -4,15 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FakeDOORS.DatabaseControls.DatabaseSettingsControls"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="200">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="View Settings" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <ComboBox Grid.Row="1" Name="ValidIn" Margin="5 2"
-                          SelectionChanged="ValidIn_SelectionChanged" Loaded="ValidIn_Loaded">
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedIndex="0">
             <ComboBoxItem Content="-"/>
             <ComboBoxItem Content="16.1"/>
             <ComboBoxItem Content="16.2"/>
@@ -27,5 +34,67 @@
             <ComboBoxItem Content="21.1"/>
             <ComboBoxItem Content="Not Closed"/>
         </ComboBox>
+
+        <TextBlock Grid.Row="2" Text="Select Columns" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <ListBox Grid.Row="3" Margin="10 5" 
+                 Name="ColumnsSelectionListBox"
+                 ScrollViewer.CanContentScroll="True"
+                 SelectionMode="Multiple"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="OverridesDefaultStyle" Value="true" />
+                    <Setter Property="SnapsToDevicePixels" Value="true" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <StackPanel Orientation="Vertical">
+                                    <CheckBox Margin="5,2"
+                                          IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                        <ContentPresenter/>
+                                    </CheckBox>
+                                </StackPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.Resources>
+            <ListBoxItem Content="ID" IsSelected="True"/>
+            <ListBoxItem Content="Text" IsSelected="True"/>
+            <ListBoxItem Content="Functional Variants" IsSelected="True"/>
+            <ListBoxItem Content="Status"/>
+        </ListBox>
+        <TextBlock Grid.Row="4" Text="Select misc Settings" FontWeight="Bold"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <ListBox Grid.Row="5" Margin="10 5" 
+                 Name="MiscSettingsSelectionListBox"
+                 ScrollViewer.CanContentScroll="True"
+                 SelectionMode="Multiple"
+                 VirtualizingPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="OverridesDefaultStyle" Value="true" />
+                    <Setter Property="SnapsToDevicePixels" Value="true" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ListBoxItem">
+                                <StackPanel Orientation="Vertical">
+                                    <CheckBox Margin="5,2"
+                                          IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                                        <ContentPresenter/>
+                                    </CheckBox>
+                                </StackPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.Resources>
+            <ListBoxItem Content="Bold Headers" IsSelected="True"/>
+        </ListBox>
+        <Button Content="Set Settings" Click="SetSettings_Click"
+                Grid.Row="6" Margin="5 2"/>
     </Grid>
 </UserControl>
