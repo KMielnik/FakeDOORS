@@ -14,10 +14,10 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
             BoldHeaders
         }
 
-        private Queue<SettingTypes> Settings;
+        private Stack<SettingTypes> Settings;
 
         public void AddSetting(SettingTypes setting)
-        => Settings.Enqueue(setting);
+        => Settings.Push(setting);
 
         public IEnumerator<SettingTypes> GetEnumerator()
         {
@@ -31,7 +31,7 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
 
         public ReqViewSettings()
         {
-            Settings = new Queue<SettingTypes>();
+            Settings = new Stack<SettingTypes>();
         }
     }
 }

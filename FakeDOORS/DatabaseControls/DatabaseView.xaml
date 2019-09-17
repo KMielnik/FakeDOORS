@@ -10,6 +10,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" MaxWidth="165"/>
             <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="1*" MaxWidth="165"/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
@@ -21,7 +22,8 @@
             <ContentControl Grid.Row="0" Name="TestCasesViewControl"/>
             <ContentControl Grid.Row="1" Name="ChapterSelectionViewControl"/>
         </Grid>
-        
+
         <ContentControl Grid.Column="1" Name="RequirementsViewControl"/>
+        <ContentControl Grid.Column="2" Name="DatabaseSettingsViewControl"/>
     </Grid>
 </UserControl>

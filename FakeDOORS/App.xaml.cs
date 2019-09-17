@@ -1,4 +1,5 @@
 ﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
+using FakeDOORS.DatabaseControls.DatabaseSettingsControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,7 @@ namespace FakeDOORS
             services.AddTransient<IRequirementsView, RequirementsView>();
             services.AddTransient<ITestCasesView, TestCasesView>();
             services.AddTransient<IChapterSelectionView, ChapterSelectionView>();
+            services.AddTransient<IDatabaseSettingsView, DatabaseSettingsView>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace ReqTools
 {
@@ -18,6 +18,11 @@ namespace ReqTools
             this.Text = Text;
             ValidFrom = Valid.From;
             ValidTo = Valid.To;
+        }
+
+        [JsonConstructor]
+        public TestCase(string ID, string Text, string ValidFrom, string ValidTo) : this(ID, Text, (ValidFrom, ValidTo))
+        {
         }
 
         public bool IsValidInSpecifiedVersion(string version)

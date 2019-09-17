@@ -57,24 +57,27 @@ namespace FakeDOORS
 
         private void AddNormalColumn(string header, int width, Binding binding)
         {
-            ReqDataGrid.Columns.Add(new DataGridTextColumn
-            {
-                Header = header,
-                Binding = binding,
-                IsReadOnly = true,
-                Width = width
-            });
             ReqHelperTop.Columns.Add(new DataGridTextColumn
             {
                 Header = header,
                 Width = width,
-                IsReadOnly = true
+                IsReadOnly = true,
+                DisplayIndex = 0
             });
             ReqHelperBottom.Columns.Add(new DataGridTextColumn
             {
                 Header = header,
                 Width = width,
-                IsReadOnly = true
+                IsReadOnly = true,
+                DisplayIndex = 0
+            });
+            ReqDataGrid.Columns.Add(new DataGridTextColumn
+            {
+                Header = header,
+                Binding = binding,
+                IsReadOnly = true,
+                Width = width,
+                DisplayIndex = 0
             });
         }
 
@@ -442,6 +445,11 @@ namespace FakeDOORS
         private void DatabaseService_RequirementsChanged(object sender, EventArgs e)
         {
             RefreshRequirements();
+            GetScrollViewer(ReqDataGrid)
+               .ScrollToVerticalOffset(ReqDataGrid.Items.IndexOf(ReqDataGrid.Items
+                   .Cast<Requirement>()
+                   .Skip(1)
+                   .FirstOrDefault(x => x.Type == Requirement.Types.Head)));
         }
 
         private void RequirementsView_Loaded(object sender, RoutedEventArgs e)
@@ -552,10 +560,9 @@ namespace FakeDOORS
             for (int i = 0; i < ReqDataGrid.Columns.Count; i++)
             {
                 if (i < ReqHelperTop.Columns.Count)
-                {
                     ReqHelperTop.Columns[i].Width = ReqDataGrid.Columns[i].Width;
+                if(i< ReqHelperBottom.Columns.Count)
                     ReqHelperBottom.Columns[i].Width = ReqDataGrid.Columns[i].Width;
-                }
             }
         }
 
@@ -564,13 +571,13 @@ namespace FakeDOORS
             var topHelper = ReqHelperTop.Columns
                 .FirstOrDefault(x => x.Header.ToString() == e.Column.Header.ToString());
 
-            if (topHelper != null)
+            if (topHelper != null && e.Column.DisplayIndex < ReqHelperTop.Columns.Count)
                 topHelper.DisplayIndex = e.Column.DisplayIndex;
 
             var bottomHelper = ReqHelperBottom.Columns
                 .FirstOrDefault(x => x.Header.ToString() == e.Column.Header.ToString());
 
-            if (bottomHelper != null)
+            if (bottomHelper != null && e.Column.DisplayIndex < ReqHelperBottom.Columns.Count)
                 bottomHelper.DisplayIndex = e.Column.DisplayIndex;
         }
 
@@ -604,5 +611,8 @@ namespace FakeDOORS
 
             ReqDataGrid.Items.Refresh();
         }
+
+        public IEnumerable<Requirement> GetSelectedRequirements()
+        => ReqDataGrid.SelectedItems.Cast<Requirement>();
     }
 }

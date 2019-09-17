@@ -114,5 +114,19 @@ namespace ReqTools
         => GetRequirementsFromChapter(chapter)
                 .SelectMany(x => x.TCs)
                 .Distinct();
+
+        public void ChangeVersionFilter(string newVersionFilter)
+        {
+            this.versionFilter = newVersionFilter;
+
+            RequirementsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public IEnumerable<TestCase> GetTestCasesFromReqList(IEnumerable<Requirement> reqs)
+        => reqs
+            .AsParallel()
+            .SelectMany(x => x.TCs)
+            .Distinct()
+            .AsSequential();
     }
 }

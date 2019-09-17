@@ -13,6 +13,7 @@
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="35"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Test Case Filters" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -47,6 +48,8 @@
                 </Style>
             </ListBox.Resources>
         </ListBox>
-        <Button Grid.Row="4" Content="Clear Test Case Filters" Margin="5" Click="ClearFiltersButton_Click"/>
+        <Button Grid.Row="3" Content="Clear Test Case Filters" Margin="5" Click="ClearFiltersButton_Click"/>
+        <Button Grid.Row="4" Content="Select TCs For Selected Reqs" Margin="5" Click="SelectTCForReqsButton_Click" Padding="2"
+                    HorizontalAlignment="Stretch" VerticalAlignment="Center" />
     </Grid>
 </UserControl>

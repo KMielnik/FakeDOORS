@@ -8,7 +8,7 @@ namespace ReqTools
     {
         public static bool IsValidIn(string version, string ValidFrom, string ValidTo)
         {
-            if (version == "-" || version is null)
+            if (version == "-" || string.IsNullOrEmpty(version))
                 return true;
             if (version == "Not Closed")
                 return ValidTo == "-";

@@ -8,7 +8,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
         IEnumerable<int> SelectedTCs { get; }
 
         event EventHandler SelectionChanged;
-
+        event EventHandler SelectTCsForSelectedReqsButtonClicked;
         void AddSelectedTCs(List<int> tcs);
         void SetSelectedTCs(List<int> tcs);
     }

@@ -53,5 +53,13 @@ namespace FakeDOORS.DatabaseControls.ChapterSelectionControls
         {
             ClearChapterSelection();
         }
+
+        public void ResetView()
+        {
+            ClearAllTCs = true;
+            SelectChaptersTCs = false;
+            selectedChapter = ("-", 0);
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

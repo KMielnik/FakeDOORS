@@ -1,4 +1,5 @@
 ﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
+using FakeDOORS.DatabaseControls.DatabaseSettingsControls;
 using FakeDOORS.DatabaseControls.RequirementsControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace FakeDOORS
         private IRequirementsView requirementsView;
         private ITestCasesView testCasesView;
         private IChapterSelectionView chapterSelectionView;
+        private IDatabaseSettingsView databaseSettingsView;
 
         private IDatabaseService databaseService;
 
@@ -31,6 +33,22 @@ namespace FakeDOORS
             RequirementViewInit();
             TestCasesViewInit();
             ChapterSelectionViewInit();
+            DatabaseSettingsViewInit();
+        }
+
+        private void DatabaseSettingsViewInit()
+        {
+            databaseSettingsView = App.ServiceProvider.GetRequiredService<IDatabaseSettingsView>();
+            databaseSettingsView.ViewSettingsChanged += DatabaseSettingsView_ViewSettingsChanged;
+
+            DatabaseSettingsViewControl.Content = databaseSettingsView;
+        }
+
+        private void DatabaseSettingsView_ViewSettingsChanged(object sender, ViewSettingsEventArgs e)
+        {
+            chapterSelectionView.ResetView();
+            databaseService.ChangeVersionFilter(e.NewFilterVersion);
+            requirementsView.SetSelectedTestCases(new List<int>());
         }
 
         private void RequirementViewInit()
@@ -44,9 +62,21 @@ namespace FakeDOORS
         {
             testCasesView = App.ServiceProvider.GetRequiredService<ITestCasesView>();
             testCasesView.SelectionChanged += TestCasesView_SelectionChanged;
+            testCasesView.SelectTCsForSelectedReqsButtonClicked += TestCasesView_SelectTCsForSelectedReqsButtonClicked;
 
             TestCasesViewControl.Content = testCasesView;
         }
+
+        private void TestCasesView_SelectTCsForSelectedReqsButtonClicked(object sender, EventArgs e)
+        {
+            var selectedReqs = requirementsView.GetSelectedRequirements();
+            var testCases = databaseService.GetTestCasesFromReqList(selectedReqs)
+                .Select(x => x.IDValue)
+                .ToList();
+
+            testCasesView.AddSelectedTCs(testCases);
+        }
+
         private void ChapterSelectionViewInit()
         {
             chapterSelectionView = App.ServiceProvider.GetRequiredService<IChapterSelectionView>();
@@ -64,7 +94,7 @@ namespace FakeDOORS
                 if (chapterSelectionView.ClearAllTCs)
                     testCasesView.SetSelectedTCs(new List<int>());
                 if (chapterSelectionView.SelectChaptersTCs)
-                    testCasesView.SetSelectedTCs(databaseService
+                    testCasesView.AddSelectedTCs(databaseService
                         .GetTestCasesFromChapter(chapterSelectionView.SelectedChapter.id)
                         .Select(x => x.IDValue)
                         .ToList());

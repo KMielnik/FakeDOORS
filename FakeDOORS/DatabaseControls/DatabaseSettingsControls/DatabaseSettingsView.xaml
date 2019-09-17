@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="FakeDOORS.DatabaseControls.DatabaseSettingsControls.DatabaseSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FakeDOORS.DatabaseControls.DatabaseSettingsControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <ComboBox Grid.Row="1" Name="ValidIn" Margin="5 2"
+                          SelectionChanged="ValidIn_SelectionChanged" Loaded="ValidIn_Loaded">
+            <ComboBoxItem Content="-"/>
+            <ComboBoxItem Content="16.1"/>
+            <ComboBoxItem Content="16.2"/>
+            <ComboBoxItem Content="17.1"/>
+            <ComboBoxItem Content="17.2"/>
+            <ComboBoxItem Content="18.1"/>
+            <ComboBoxItem Content="18.2"/>
+            <ComboBoxItem Content="19.1"/>
+            <ComboBoxItem Content="19.2"/>
+            <ComboBoxItem Content="20.1"/>
+            <ComboBoxItem Content="20.2"/>
+            <ComboBoxItem Content="21.1"/>
+            <ComboBoxItem Content="Not Closed"/>
+        </ComboBox>
+    </Grid>
+</UserControl>

@@ -31,6 +31,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
         }
 
         public event EventHandler SelectionChanged;
+        public event EventHandler SelectTCsForSelectedReqsButtonClicked;
 
         public IEnumerable<int> SelectedTCs => AllTCsListBox.SelectedItems
             .Cast<int>();
@@ -66,6 +67,8 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
 
         private async void DatabaseService_RequirementsChanged(object sender, EventArgs e)
         {
+            TCFilter.Text = string.Empty;
+
             TestCases.Clear();
             (await databaseService.GetTestCases())
                 .Select(x => x.IDValue)
@@ -141,6 +144,11 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
                 SelectionChanged?.Invoke(this, EventArgs.Empty);
                 isUserInteraction = false;
             }
+        }
+
+        private void SelectTCForReqsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SelectTCsForSelectedReqsButtonClicked?.Invoke(this, EventArgs.Empty);
         }
     }
 }

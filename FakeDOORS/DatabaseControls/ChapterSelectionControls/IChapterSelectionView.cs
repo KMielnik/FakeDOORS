@@ -9,6 +9,7 @@ namespace FakeDOORS.DatabaseControls.ChapterSelectionControls
         (string chapter, int id) SelectedChapter { get; }
 
         event EventHandler SelectionChanged;
+        void ResetView();
 
         void ClearChapterSelection();
     }
