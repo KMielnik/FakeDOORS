@@ -54,9 +54,18 @@ namespace ReqTools
         });
 
         public async Task DownloadNewestVersion()
-        => await Task.Run(() => File.Copy(defaultServerCachedFileName, defaultCachedFileName, true))
-            .ContinueWith(s => RefreshCachedData())
-            .ContinueWith(s => RequirementsChanged?.Invoke(this, EventArgs.Empty));
+        {
+            try
+            {
+                await Task.Run(() => File.Copy(defaultServerCachedFileName, defaultCachedFileName, true));
+            }
+            catch
+            {
+                return;
+            }
+            await RefreshCachedData();
+            RequirementsChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         private async Task RefreshCachedData()
         {
