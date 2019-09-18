@@ -41,6 +41,7 @@ namespace FakeDOORS
             services.AddTransient<ITestCasesView, TestCasesView>();
             services.AddTransient<IChapterSelectionView, ChapterSelectionView>();
             services.AddTransient<IDatabaseSettingsView, DatabaseSettingsView>();
+            services.AddTransient<IUpdaterView, UpdaterView>();
         }
     }
 }

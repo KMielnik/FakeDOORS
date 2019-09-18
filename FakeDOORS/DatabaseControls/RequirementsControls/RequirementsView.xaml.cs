@@ -130,6 +130,11 @@ namespace FakeDOORS
                             AddNormalColumn("Status", 80, new Binding(nameof(Requirement.Status)));
                             break;
                         }
+                    case ReqViewSettings.SettingTypes.ValidFromToColumn:
+                        {
+                            AddNormalColumn("Valid From/To", 100, new Binding(nameof(Requirement.ValidFromTo)));
+                            break;
+                        }
                 }
 
             #region always_on_filters

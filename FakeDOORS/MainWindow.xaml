@@ -12,5 +12,6 @@
             <RowDefinition Height="1*" MinHeight="25" MaxHeight="50"/>
         </Grid.RowDefinitions>
         <ContentControl Grid.Row="0" Name="DatabaseViewControl"/>
+        <ContentControl Grid.Row="1" Name="UpdaterViewControl"/>
     </Grid>
 </Window>

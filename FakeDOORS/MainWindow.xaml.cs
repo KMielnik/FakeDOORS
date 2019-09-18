@@ -9,13 +9,16 @@ namespace FakeDOORS
     public partial class MainWindow : Window
     {
         private IDatabaseView databaseView;
-        public MainWindow()
+        private IUpdaterView updaterView;
+        public MainWindow(IDatabaseView databaseView, IUpdaterView updaterView)
         {
             InitializeComponent();
 
-            databaseView = App.ServiceProvider.GetRequiredService<IDatabaseView>();
-
+            this.databaseView = databaseView;
             DatabaseViewControl.Content = databaseView;
+
+            this.updaterView = updaterView;
+            UpdaterViewControl.Content = updaterView;
         }
 
         private void DisplayChangeLog()

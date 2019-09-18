@@ -35,7 +35,12 @@ namespace ReqTools
 
             if (File.Exists(defaultCachedFileName))
             {
-                await RefreshCachedData();
+                try 
+                {
+                    await RefreshCachedData();
+                }
+                catch { };
+                
                 RequirementsChanged?.Invoke(this, EventArgs.Empty);
             }
             else
@@ -69,8 +74,10 @@ namespace ReqTools
 
         private async Task RefreshCachedData()
         {
+            var exportData = await reqParser.GetReqsFromCachedFile(defaultCachedFileName);
             requirements.Clear();
-            requirements.AddRange((await reqParser.GetReqsFromCachedFile(defaultCachedFileName)).reqs);
+            requirements.AddRange(exportData.reqs);
+            reqsExportDate = exportData.exportDate;
 
             allTestCases.Clear();
             allTestCases.AddRange(requirements
@@ -130,12 +137,20 @@ namespace ReqTools
 
             RequirementsChanged?.Invoke(this, EventArgs.Empty);
         }
-
+        
         public IEnumerable<TestCase> GetTestCasesFromReqList(IEnumerable<Requirement> reqs)
         => reqs
             .AsParallel()
             .SelectMany(x => x.TCs)
             .Distinct()
             .AsSequential();
+
+        public async Task ParseToFileAsync(IProgress<string> progress, string input, string output)
+        {
+            await reqParser.ParseToFileAsync(progress, input, output);
+        }
+
+        public DateTime GetCacheCreationDate()
+        => reqsExportDate;
     }
 }

@@ -9,6 +9,8 @@ namespace ReqTools
     {
         event EventHandler RequirementsChanged;
         Task Init(string versionFilter = "-");
+        Task ParseToFileAsync(IProgress<string> progress, string input, string output);
+        DateTime GetCacheCreationDate();
         List<Requirement> GetRequirements();
         Task<List<TestCase>> GetTestCases();
         void ChangeVersionFilter(string newVersionFilter);

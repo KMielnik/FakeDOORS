@@ -48,6 +48,12 @@
             return this;
         }
 
+        public ReqViewSettingsBuilder AddValidFromToColumn()
+        {
+            reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.ValidFromToColumn);
+            return this;
+        }
+
         public ReqViewSettings Build()
         => reqViewSettings;
     }

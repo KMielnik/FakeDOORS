@@ -55,6 +55,10 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
                     case "Status":
                         reqViewSettings = reqViewSettings.AddStatusColumn();
                         break;
+
+                    case "Valid From/To":
+                        reqViewSettings = reqViewSettings.AddValidFromToColumn();
+                        break;
                 }
             }
 

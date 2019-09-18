@@ -65,6 +65,7 @@
             <ListBoxItem Content="Text" IsSelected="True"/>
             <ListBoxItem Content="Functional Variants" IsSelected="True"/>
             <ListBoxItem Content="Status"/>
+            <ListBoxItem Content="Valid From/To"/>
         </ListBox>
         <TextBlock Grid.Row="4" Text="Select misc Settings" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>

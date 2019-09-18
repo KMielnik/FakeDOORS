@@ -25,6 +25,8 @@ namespace ReqTools
         public Statuses Status { get; }
         public string ValidFrom { get; }
         public string ValidTo { get; }
+        [JsonIgnore]
+        public string ValidFromTo { get; }
 
         [JsonIgnore]
         public bool IsVisible { get; set; }
@@ -59,6 +61,7 @@ namespace ReqTools
             Status = status;
             this.ValidFrom = ValidFrom;
             this.ValidTo = ValidTo;
+            this.ValidFromTo = $"[{ValidFrom}/{ValidTo}]";
 
             this.TCs = new List<TestCase>();
 

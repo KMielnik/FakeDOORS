@@ -12,7 +12,8 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
             TextColumn,
             FVariantColumn,
             StatusColumn,
-            BoldHeaders
+            BoldHeaders,
+            ValidFromToColumn
         }
 
         private Stack<SettingTypes> Settings;
