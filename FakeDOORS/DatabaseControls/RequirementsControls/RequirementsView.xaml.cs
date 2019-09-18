@@ -210,11 +210,11 @@ namespace FakeDOORS
 
             for (int i = firstTCColumnIndex; i < ReqDataGrid.Columns.Count; i++)
             {
-                var columnTCValue = (int)ReqDataGrid.Columns[i].Header;
+                var columnTCValue = ReqDataGrid.Columns[i].Header.ToString();
                 var topColumn = ReqHelperTop.Columns
-                    ?.FirstOrDefault(x => x.Header is int && (int)x.Header == columnTCValue);
+                    ?.FirstOrDefault(x => x.Header.ToString() == columnTCValue);
                 var bottomColumn = ReqHelperBottom.Columns
-                    ?.FirstOrDefault(x => x.Header is int && (int)x.Header == columnTCValue);
+                    ?.FirstOrDefault(x => x.Header.ToString() == columnTCValue);
 
                 if (topColumn != null && bottomColumn != null)
                 {

@@ -1,8 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MahApps.Metro.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,7 +21,7 @@ namespace FakeDOORS.UpdaterControls
     /// <summary>
     /// Interaction logic for DoorsExporterWindow.xaml
     /// </summary>
-    public partial class DoorsExporterWindow : Window
+    public partial class DoorsExporterWindow : MetroWindow
     {
         readonly private IDatabaseService databaseService;
         public DoorsExporterWindow()
@@ -115,7 +117,12 @@ namespace FakeDOORS.UpdaterControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(@"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\Data\export_instructions.pdf");
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(@"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\Data\export_instructions.pdf")
+            {
+                UseShellExecute = true
+            };
+            p.Start();
         }
     }
 }

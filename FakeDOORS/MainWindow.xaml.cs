@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MahApps.Metro.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 
 namespace FakeDOORS
@@ -6,7 +7,7 @@ namespace FakeDOORS
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private IDatabaseView databaseView;
         private IUpdaterView updaterView;

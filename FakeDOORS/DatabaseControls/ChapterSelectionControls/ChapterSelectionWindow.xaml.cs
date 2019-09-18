@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MahApps.Metro.Controls;
+using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
 using System;
 using System.Collections.ObjectModel;
@@ -13,7 +14,7 @@ namespace FakeDOORS.DatabaseControls.ChapterSelectionControls
     /// <summary>
     /// Interaction logic for ChapterSelectionWindow.xaml
     /// </summary>
-    public partial class ChapterSelectionWindow : Window
+    public partial class ChapterSelectionWindow : MetroWindow
     {
         public ObservableCollection<(string chapter, int id)> Chapters { get; set; }
         public (string chapter, int id) Answer { get; private set; }
