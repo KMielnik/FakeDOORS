@@ -9,5 +9,8 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
     {
         public string NewFilterVersion { get; set; }
         public ReqViewSettings Settings { get; set; }
+        public bool ReqsNeedsReloading { get; set; } = false;
+        public bool ColumnsNeedsReloading { get; set; } = false;
+        public bool StyleNeedsReloading { get; set; } = false;
     }
 }

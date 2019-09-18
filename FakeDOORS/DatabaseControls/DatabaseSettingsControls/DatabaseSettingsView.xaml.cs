@@ -26,48 +26,48 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
             InitializeComponent();
 
             this.databaseService = databaseService;
-
-
         }
 
         public event EventHandler<ViewSettingsEventArgs> ViewSettingsChanged;
 
-        private ViewSettingsEventArgs GetEventArgs()
+        private ViewSettingsEventArgs GetEventArgs((bool reqs, bool column, bool style) reload)
         {
-            var reqViewSettings = new ReqViewSettingsBuilder();
+            var reqViewSettingsBuilder = new ReqViewSettingsBuilder();
 
-            foreach(ListBoxItem column in ColumnsSelectionListBox.SelectedItems)
+            if(reload.column)
+            foreach (ListBoxItem column in ColumnsSelectionListBox.SelectedItems)
             {
-                switch(column.Content.ToString())
+                switch (column.Content.ToString())
                 {
                     case "ID":
-                        reqViewSettings = reqViewSettings.AddIDColumn();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddIDColumn();
                         break;
 
                     case "Text":
-                        reqViewSettings = reqViewSettings.AddTextColumn();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddTextColumn();
                         break;
 
                     case "Functional Variants":
-                        reqViewSettings = reqViewSettings.AddFVariantsColumn();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddFVariantsColumn();
                         break;
 
                     case "Status":
-                        reqViewSettings = reqViewSettings.AddStatusColumn();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddStatusColumn();
                         break;
 
                     case "Valid From/To":
-                        reqViewSettings = reqViewSettings.AddValidFromToColumn();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddValidFromToColumn();
                         break;
                 }
             }
 
+            if(reload.style)
             foreach (ListBoxItem column in MiscSettingsSelectionListBox.SelectedItems)
             {
                 switch (column.Content.ToString())
                 {
                     case "Bold Headers":
-                        reqViewSettings = reqViewSettings.SetBoldHeaders();
+                        reqViewSettingsBuilder = reqViewSettingsBuilder.SetBoldHeaders();
                         break;
                 }
             }
@@ -75,18 +75,36 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
             return new ViewSettingsEventArgs()
             {
                 NewFilterVersion = ValidIn.SelectedItem is null ? "-" : (ValidIn.SelectedItem as ComboBoxItem).Content.ToString(),
-                Settings = reqViewSettings.Build()
+                Settings = reqViewSettingsBuilder.Build(),
+                ReqsNeedsReloading = reload.reqs,
+                ColumnsNeedsReloading = reload.column,
+                StyleNeedsReloading = reload.style
             };
         }
 
         private void SetSettings_Click(object sender, RoutedEventArgs e)
         {
-            ViewSettingsChanged?.Invoke(this, GetEventArgs());
+            ViewSettingsChanged?.Invoke(this, GetEventArgs((true, true, true)));
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewSettingsChanged?.Invoke(this, GetEventArgs());
+            ViewSettingsChanged?.Invoke(this, GetEventArgs((true, true, true)));
+        }
+
+        private void ValidIn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewSettingsChanged?.Invoke(this, GetEventArgs((true, false, false)));
+        }
+
+        private void ColumnsSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewSettingsChanged?.Invoke(this, GetEventArgs((false, true, false)));
+        }
+
+        private void MiscSettingsSelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ViewSettingsChanged?.Invoke(this, GetEventArgs((false, false, true)));
         }
     }
 }

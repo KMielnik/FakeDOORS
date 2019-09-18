@@ -46,9 +46,13 @@ namespace FakeDOORS
 
         private void DatabaseSettingsView_ViewSettingsChanged(object sender, ViewSettingsEventArgs e)
         {
-            chapterSelectionView.ResetView();
-            databaseService.ChangeVersionFilter(e.NewFilterVersion);
-            requirementsView.SetReqView(e.Settings);
+            if (e.ReqsNeedsReloading)
+            {
+                chapterSelectionView.ResetView();
+                databaseService.ChangeVersionFilter(e.NewFilterVersion);
+            }
+            if (e.ColumnsNeedsReloading || e.StyleNeedsReloading)
+                requirementsView.SetReqView(e.Settings, (e.ColumnsNeedsReloading, e.StyleNeedsReloading));
         }
 
         private void RequirementViewInit()

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:FakeDOORS.DatabaseControls.DatabaseSettingsControls"
              mc:Ignorable="d" Loaded="UserControl_Loaded"
              d:DesignHeight="450" d:DesignWidth="200">
-    <Grid>
+    <Grid Margin="0 10">
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="30"/>
@@ -19,7 +19,8 @@
         <TextBlock Grid.Row="0" Text="View Settings" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <ComboBox Grid.Row="1" Name="ValidIn" Margin="5 2"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedIndex="0">
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedIndex="0"
+                  SelectionChanged="ValidIn_SelectionChanged">
             <ComboBoxItem Content="-"/>
             <ComboBoxItem Content="16.1"/>
             <ComboBoxItem Content="16.2"/>
@@ -42,7 +43,8 @@
                  ScrollViewer.CanContentScroll="True"
                  SelectionMode="Multiple"
                  VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling">
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 SelectionChanged="ColumnsSelectionListBox_SelectionChanged">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -74,7 +76,8 @@
                  ScrollViewer.CanContentScroll="True"
                  SelectionMode="Multiple"
                  VirtualizingPanel.IsVirtualizing="True"
-                 VirtualizingPanel.VirtualizationMode="Recycling">
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 SelectionChanged="MiscSettingsSelectionListBox_SelectionChanged">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -95,7 +98,7 @@
             </ListBox.Resources>
             <ListBoxItem Content="Bold Headers" IsSelected="True"/>
         </ListBox>
-        <Button Content="Set Settings" Click="SetSettings_Click"
+        <Button Content="Refresh View" Click="SetSettings_Click"
                 Grid.Row="6" Margin="5 2"/>
     </Grid>
 </UserControl>

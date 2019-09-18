@@ -8,7 +8,7 @@ namespace FakeDOORS
 {
     public interface IRequirementsView
     {
-        void SetReqView(ReqViewSettings settings);
+        void SetReqView(ReqViewSettings settings, (bool column, bool style) needsReload);
         Task SetSelectedTestCases(List<int> testCases);
         IEnumerable<Requirement> GetSelectedRequirements();
         void LimitScrollingToOneChapter(int chapter);

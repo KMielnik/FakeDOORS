@@ -81,12 +81,27 @@ namespace FakeDOORS
             });
         }
 
-        public void SetReqView(ReqViewSettings settings)
+        public void SetReqView(ReqViewSettings settings, (bool column, bool style) needsReload)
         {
-            ReqDataGrid.RowStyle = new Style();
-            ReqDataGrid.Columns.Clear();
-            ReqHelperTop.Columns.Clear();
-            ReqHelperBottom.Columns.Clear();
+            if(needsReload.style)
+                ReqDataGrid.RowStyle = new Style();
+            if (needsReload.column)
+            {
+                ReqDataGrid.Columns
+                    .Where(x => !(x.Header is int))
+                    .ToList()
+                    .ForEach(x => ReqDataGrid.Columns.Remove(x));
+                
+                ReqHelperTop.Columns
+                    .Where(x => !(x.Header is int))
+                    .ToList()
+                    .ForEach(x => ReqHelperTop.Columns.Remove(x));
+
+                ReqHelperBottom.Columns
+                    .Where(x => !(x.Header is int))
+                    .ToList()
+                    .ForEach(x => ReqHelperBottom.Columns.Remove(x));
+            }
 
             foreach (var setting in settings)
                 switch (setting)
@@ -150,7 +165,8 @@ namespace FakeDOORS
                 Value = Visibility.Hidden
             });
 
-            ReqDataGrid.RowStyle.Triggers.Add(visibilityTrigger);
+            if(needsReload.style)
+                ReqDataGrid.RowStyle.Triggers.Add(visibilityTrigger);
             #endregion
         }
 
@@ -453,9 +469,10 @@ namespace FakeDOORS
                 .ForEach(Requirements.Add);
         }
 
-        private void DatabaseService_RequirementsChanged(object sender, EventArgs e)
+        private async void DatabaseService_RequirementsChanged(object sender, EventArgs e)
         {
             RefreshRequirements();
+            await SetSelectedTestCases(new List<int>());
             GetScrollViewer(ReqDataGrid)
                .ScrollToVerticalOffset(ReqDataGrid.Items.IndexOf(ReqDataGrid.Items
                    .Cast<Requirement>()
