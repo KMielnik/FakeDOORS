@@ -19,7 +19,7 @@
                   CanUserAddRows="False" IsReadOnly="True"
                   HeadersVisibility="None"
                   FontWeight="ExtraBold" FontSize="13"
-                  VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
+                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
 
         <DataGrid Name="ReqDataGrid" Grid.Row="1" ItemsSource="{Binding Requirements}"
                   RowHeight="20" CanUserResizeRows="False"
@@ -36,6 +36,6 @@
                   CanUserAddRows="False" IsReadOnly="True"
                   HeadersVisibility="None" 
                   FontWeight="ExtraBold" FontSize="13"
-                  VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
+                  VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden" GotFocus="Helper_GotFocus"/>
     </Grid>
 </UserControl>
