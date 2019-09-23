@@ -66,8 +66,10 @@
             <ListBoxItem Content="ID" IsSelected="True"/>
             <ListBoxItem Content="Text" IsSelected="True"/>
             <ListBoxItem Content="Functional Variants" IsSelected="True"/>
+            <ListBoxItem Content="Hardware Variants"/>
             <ListBoxItem Content="Status"/>
             <ListBoxItem Content="Valid From/To"/>
+            <ListBoxItem Content="Comment"/>
         </ListBox>
         <TextBlock Grid.Row="4" Text="Select misc Settings" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>

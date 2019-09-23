@@ -11,7 +11,7 @@ namespace ReqTools
     public class DatabaseService : IDatabaseService
     {
         private const string defaultCachedFileName = "cached_reqs.json";
-        private const string defaultServerCachedFileName = @"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\Data\cached_reqs.json";
+        private const string defaultServerCachedFileName = @"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\cached_reqs.json";
 
         private IReqParser reqParser;
 
@@ -74,17 +74,23 @@ namespace ReqTools
 
         private async Task RefreshCachedData()
         {
-            var exportData = await reqParser.GetReqsFromCachedFile(defaultCachedFileName);
-            requirements.Clear();
-            requirements.AddRange(exportData.reqs);
-            reqsExportDate = exportData.exportDate;
+            try
+            {
+                var exportData = await reqParser.GetReqsFromCachedFile(defaultCachedFileName);
+                requirements.Clear();
+                requirements.AddRange(exportData.reqs);
+                reqsExportDate = exportData.exportDate;
 
-            allTestCases.Clear();
-            allTestCases.AddRange(requirements
-                .AsParallel()
-                .SelectMany(x => x.TCs)
-                .Distinct()
-                .OrderBy(x => x.IDValue));
+                allTestCases.Clear();
+                allTestCases.AddRange(requirements
+                    .AsParallel()
+                    .SelectMany(x => x.TCs)
+                    .Distinct()
+                    .OrderBy(x => x.IDValue));
+            }
+            catch
+            {
+            }      
         }
         public List<Requirement> GetRequirements()
         => requirements

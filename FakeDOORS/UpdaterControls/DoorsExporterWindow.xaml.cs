@@ -118,7 +118,7 @@ namespace FakeDOORS.UpdaterControls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var p = new Process();
-            p.StartInfo = new ProcessStartInfo(@"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\Data\export_instructions.pdf")
+            p.StartInfo = new ProcessStartInfo(@"\\10.128.3.1\DFS_Data_KBN_RnD_FS_Programs\Support_Tools\FakeDOORS\export_instructions.pdf")
             {
                 UseShellExecute = true
             };

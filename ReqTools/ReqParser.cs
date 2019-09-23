@@ -143,6 +143,20 @@ namespace ReqTools
                         .Replace("Functional Variants (use CTRL-R for edit):", string.Empty)
                         .Trim();
 
+                    var hVariants = reqStrings
+                        .SkipWhile(y => !y.Contains("Hardware Variants (use CTRL-R for edit):"))
+                        .TakeWhile(y => !y.Contains("SR Functional Variants:"))
+                        .Select(y => y.Trim())
+                        .Aggregate("", (acc, y) => acc + y)
+                        .Replace("Hardware Variants (use CTRL-R for edit):", string.Empty)
+                        .Trim();
+
+                    var comment = reqStrings
+                        .Where(y => y.Contains("Comment:"))
+                        .FirstOrDefault()
+                        .Replace("Comment:", string.Empty)
+                        .Trim();
+
                     var type = reqStrings
                         .Where(y => y.Contains("Object Type:"))
                         .FirstOrDefault()
@@ -187,10 +201,12 @@ namespace ReqTools
                         indentLevel,
                         TCs,
                         fVariants,
+                        hVariants,
                         type,
                         status,
                         ValidFrom,
-                        ValidTo
+                        ValidTo,
+                        comment
                        );
                 })
                 .ToList();
@@ -211,11 +227,18 @@ namespace ReqTools
             exportDateJson = lines[0];
             reqJson = lines[1];
 
-            return await Task.Run(() =>
-            (
-                JsonConvert.DeserializeObject<List<Requirement>>(reqJson),
-                JsonConvert.DeserializeObject<DateTime>(exportDateJson)
-            ));
+            try
+            {
+                return await Task.Run(() =>
+                (
+                    JsonConvert.DeserializeObject<List<Requirement>>(reqJson),
+                    JsonConvert.DeserializeObject<DateTime>(exportDateJson)
+                ));
+            }
+            catch
+            {
+                return (new List<Requirement>(), DateTime.MinValue);
+            }
         }
 
         public async Task ParseToFileAsync(IProgress<string> progress, string input, string output)

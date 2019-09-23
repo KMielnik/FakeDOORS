@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="FakeDOORS.SettingsControls.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FakeDOORS.SettingsControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="10">
+            <TextBlock Text="Installer Path" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Grid Margin="10 0 10 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Name="ServerMainPath" IsEnabled="False" Loaded="ServerMainPath_Loaded"
+                           VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <Button Grid.Column="1" Content="Open" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5 2" Click="OpenServerPathButton_Click"/>
+            </Grid>
+            <Button Content="Download Newest Version" Margin="10" Click="Button_Click"/>
+            <Button Content="Open Changelog" Margin="10" Click="Button_Click_1"/>
+            <Button Content="Create Shortcut On Desktop" Margin="10" Click="Button_Click_2"/>
+            <TextBlock Text="Author: KMIM" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -11,6 +11,8 @@ namespace FakeDOORS.DatabaseControls.RequirementsControls
             IDColumn,
             TextColumn,
             FVariantColumn,
+            HVariantColumn,
+            CommentColumn,
             StatusColumn,
             BoldHeaders,
             ValidFromToColumn

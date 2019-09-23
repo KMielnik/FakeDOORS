@@ -21,9 +21,9 @@ namespace ReqTools
 
             FakeRequirements = new List<Requirement>()
             {
-                new Requirement("1","1. Chapter One",0,new List<TestCase>(),"",Requirement.Types.Head,Requirement.Statuses.Approved,"-","-"),
-                new Requirement("2","Req - 1",1,new List<TestCase>(),"Variant:Some Variant",Requirement.Types.Req,Requirement.Statuses.Approved,"-","-"),
-                new Requirement("3","Req - 2",1,tcs,"",Requirement.Types.Req,Requirement.Statuses.Approved,"-","-")
+                new Requirement("1","1. Chapter One",0,new List<TestCase>(),"","",Requirement.Types.Head,Requirement.Statuses.Approved,"-","-",""),
+                new Requirement("2","Req - 1",1,new List<TestCase>(),"Variant:Some Variant","",Requirement.Types.Req,Requirement.Statuses.Approved,"-","-",""),
+                new Requirement("3","Req - 2",1,tcs,"","",Requirement.Types.Req,Requirement.Statuses.Approved,"-","-","")
             };
         }
 

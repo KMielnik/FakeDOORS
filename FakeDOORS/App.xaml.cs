@@ -1,12 +1,14 @@
 ﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
 using FakeDOORS.DatabaseControls.DatabaseSettingsControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
+using FakeDOORS.SettingsControls;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace FakeDOORS
 {
@@ -36,12 +38,22 @@ namespace FakeDOORS
             services.AddSingleton<IDatabaseService, DatabaseService>();
             services.AddScoped<IReqParser, ReqParser>();
             services.AddTransient<MainWindow>();
+            services.AddTransient<ChangelogWindow>();
             services.AddTransient<IDatabaseView, DatabaseView>();
             services.AddTransient<IRequirementsView, RequirementsView>();
             services.AddTransient<ITestCasesView, TestCasesView>();
             services.AddTransient<IChapterSelectionView, ChapterSelectionView>();
             services.AddTransient<IDatabaseSettingsView, DatabaseSettingsView>();
             services.AddTransient<IUpdaterView, UpdaterView>();
+            services.AddTransient<ISettingsView, SettingsView>();
+
+            services.AddSingleton<AppSettings>();
+        }
+
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show("EXCEPTION: "+e.Exception.Message);
+            e.Handled = true;
         }
     }
 }

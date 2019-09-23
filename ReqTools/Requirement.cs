@@ -16,6 +16,9 @@ namespace ReqTools
         public string TextIntended { get; }
         public Types Type { get; }
         public string FVariants { get; }
+        public string HVariants { get; }
+        public string Comment { get; }
+
         public int Level { get; }
 
         public List<TestCase> TCs { get; }
@@ -47,7 +50,7 @@ namespace ReqTools
             Stable
         }
 
-        public Requirement(string iD, string text, int level, List<TestCase> TCs, string fVariants, Types type, Statuses status, string ValidFrom, string ValidTo)
+        public Requirement(string iD, string text, int level, List<TestCase> TCs, string fVariants, string hVariants, Types type, Statuses status, string ValidFrom, string ValidTo, string comment)
         {
             ID = iD;
             IDValue = int.Parse(ID.Replace("PR_PH_", ""));
@@ -56,6 +59,8 @@ namespace ReqTools
             Text = text;
             TextIntended = new string(' ', Level * 3) + Text;
             FVariants = fVariants;
+            HVariants = hVariants;
+            Comment = comment;
             Type = type;
 
             Status = status;

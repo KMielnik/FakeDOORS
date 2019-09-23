@@ -34,43 +34,51 @@ namespace FakeDOORS.DatabaseControls.DatabaseSettingsControls
         {
             var reqViewSettingsBuilder = new ReqViewSettingsBuilder();
 
-            if(reload.column)
-            foreach (ListBoxItem column in ColumnsSelectionListBox.SelectedItems)
-            {
-                switch (column.Content.ToString())
+            if (reload.column)
+                foreach (ListBoxItem column in ColumnsSelectionListBox.SelectedItems)
                 {
-                    case "ID":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddIDColumn();
-                        break;
+                    switch (column.Content.ToString())
+                    {
+                        case "ID":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddIDColumn();
+                            break;
 
-                    case "Text":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddTextColumn();
-                        break;
+                        case "Text":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddTextColumn();
+                            break;
 
-                    case "Functional Variants":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddFVariantsColumn();
-                        break;
+                        case "Functional Variants":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddFVariantsColumn();
+                            break;
 
-                    case "Status":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddStatusColumn();
-                        break;
+                        case "Hardware Variants":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddHVariantsColumn();
+                            break;
 
-                    case "Valid From/To":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.AddValidFromToColumn();
-                        break;
+                        case "Status":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddStatusColumn();
+                            break;
+
+                        case "Valid From/To":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddValidFromToColumn();
+                            break;
+
+                        case "Comment":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.AddCommentColumn();
+                            break;
+                    }
                 }
-            }
 
-            if(reload.style)
-            foreach (ListBoxItem column in MiscSettingsSelectionListBox.SelectedItems)
-            {
-                switch (column.Content.ToString())
+            if (reload.style)
+                foreach (ListBoxItem column in MiscSettingsSelectionListBox.SelectedItems)
                 {
-                    case "Bold Headers":
-                        reqViewSettingsBuilder = reqViewSettingsBuilder.SetBoldHeaders();
-                        break;
+                    switch (column.Content.ToString())
+                    {
+                        case "Bold Headers":
+                            reqViewSettingsBuilder = reqViewSettingsBuilder.SetBoldHeaders();
+                            break;
+                    }
                 }
-            }
 
             return new ViewSettingsEventArgs()
             {

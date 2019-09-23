@@ -36,6 +36,18 @@
             return this;
         }
 
+        public ReqViewSettingsBuilder AddHVariantsColumn()
+        {
+            reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.HVariantColumn);
+            return this;
+        }
+
+        public ReqViewSettingsBuilder AddCommentColumn()
+        {
+            reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.CommentColumn);
+            return this;
+        }
+
         public ReqViewSettingsBuilder SetBoldHeaders()
         {
             reqViewSettings.AddSetting(ReqViewSettings.SettingTypes.BoldHeaders);

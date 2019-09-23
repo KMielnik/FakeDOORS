@@ -121,6 +121,16 @@ namespace FakeDOORS
                             AddNormalColumn("Functional Variants", 200, new Binding(nameof(Requirement.FVariants)));
                             break;
                         }
+                    case ReqViewSettings.SettingTypes.HVariantColumn:
+                        {
+                            AddNormalColumn("Hardware Variants", 200, new Binding(nameof(Requirement.HVariants)));
+                            break;
+                        }
+                    case ReqViewSettings.SettingTypes.CommentColumn:
+                        {
+                            AddNormalColumn("Comment", 200, new Binding(nameof(Requirement.Comment)));
+                            break;
+                        }
 
                     case ReqViewSettings.SettingTypes.BoldHeaders:
                         {

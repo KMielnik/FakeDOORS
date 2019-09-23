@@ -6,16 +6,14 @@
         xmlns:local="clr-namespace:FakeDOORS"
         mc:Ignorable="d" Loaded="Window_Loaded"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         GlowBrush="{DynamicResource AccentColorBrush}"
         Icon="fakedoors.ico"
         ShowIconOnTitleBar="True"
         Title="FakeDOORS" Height="800" Width="1500" ShowInTaskbar="True">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
-            <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconModern Width="20" Height="20" Kind="Settings" VerticalAlignment="Center"/>
-                <TextBlock Margin="4" VerticalAlignment="Center" Text="Settings"/>
+            <StackPanel Orientation="Horizontal" PreviewMouseDown="SettingsToggle_PreviewMouseDown">
+                <TextBlock Margin="4 8" VerticalAlignment="Center" Text="Settings"/>
             </StackPanel>
         </Controls:WindowCommands>
     </Controls:MetroWindow.RightWindowCommands>
@@ -25,6 +23,7 @@
             <RowDefinition Height="1*" MinHeight="25" MaxHeight="50"/>
         </Grid.RowDefinitions>
         <ContentControl Grid.Row="0" Name="DatabaseViewControl"/>
+        <ContentControl Grid.Row="0" Name="SettingsViewControl" Visibility="Collapsed"/>
         <ContentControl Grid.Row="1" Name="UpdaterViewControl"/>
     </Grid>
 </Controls:MetroWindow>
