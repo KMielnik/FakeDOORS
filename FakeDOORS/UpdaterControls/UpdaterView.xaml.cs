@@ -1,5 +1,6 @@
 ﻿using FakeDOORS.UpdaterControls;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using ReqTools;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,10 @@ namespace FakeDOORS
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            var result = MessageBox.Show("Do you want to replace actual cached file with latest one from server?", "Confirm replacement.",
-                            MessageBoxButton.OKCancel, MessageBoxImage.Question);
-            if (result == MessageBoxResult.OK)
+            var result = await DialogCoordinator.Instance.ShowMessageAsync(this, "Confirm replacement.",
+                "Do you want to replace actual cached file with latest one from server?", MessageDialogStyle.AffirmativeAndNegative);
+
+            if (result == MessageDialogResult.Affirmative)
             {
                 await databaseService.DownloadNewestVersion();
                 UpdateButton.Content = "Get latest version";
@@ -61,6 +63,15 @@ namespace FakeDOORS
                     await databaseService.Init();
             };
             exporterWindow.Show();
+        }
+
+        private async void UpdateButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(await databaseService.CheckForUpdates())
+            {
+                UpdateButton.Content = "UPDATE AVAILABLE";
+                UpdateButton.Background = Brushes.Red;
+            }
         }
     }
 }

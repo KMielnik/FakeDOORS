@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace FakeDOORS.SettingsControls
 {
@@ -27,13 +28,12 @@ namespace FakeDOORS.SettingsControls
         public SettingsView(AppSettings settings)
         {
             InitializeComponent();
-
             this.settings = settings;
         }
 
         private void ServerMainPath_Loaded(object sender, RoutedEventArgs e)
         {
-            ServerMainPath.Text = settings.ServerPath;
+            (sender as TextBlock).Text = settings.ServerPath;
         }
 
         private void OpenServerPathButton_Click(object sender, RoutedEventArgs e)
@@ -49,21 +49,23 @@ namespace FakeDOORS.SettingsControls
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
-        => await Task.Run(() =>
+        => await Task.Run(async () =>
          {
              try
              {
-                 if (File.Exists("FakeDOORS.exe.bak"))
-                     File.Delete("FakeDOORS.exe.bak");
+                 var backupLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe.bak";
+                 var installLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe";
+                 var serverLocation = settings.ServerPath + "FakeDOORS.exe";
+                 if (File.Exists(backupLocation))
+                     File.Delete(backupLocation);
 
-                 File.Move("FakeDOORS.exe", "FakeDOORS.exe.bak");
-                 File.Copy(settings.ServerPath + "FakeDOORS.exe", "FakeDOORS.exe", true);
-                 MessageBox.Show("Done, restart app to use the new version");
+                 File.Move(installLocation, backupLocation, true);
+                 File.Copy(serverLocation, installLocation, true);
+                 await DialogCoordinator.Instance.ShowMessageAsync(this, "Success!", "Done, restart app to use the new version");
              }
-             catch(Exception e)
+             catch
              {
-                 File.WriteAllText("log.txt", e.Message);
-                 MessageBox.Show($"Couldn't install the newest version.\n Please install it manually from\n{settings.ServerPath}");
+                 await DialogCoordinator.Instance.ShowMessageAsync(this, "Error", $"Couldn't install the newest version.\nPlease install it manually from\n{settings.ServerPath}\nCopy it to\n{Directory.GetCurrentDirectory()}");
              }
          });
 
@@ -75,6 +77,23 @@ namespace FakeDOORS.SettingsControls
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             ShortcutCreator.CreateShortcut();
+        }
+
+        private void InstallDirPath_Loaded(object sender, RoutedEventArgs e)
+        {
+            (sender as TextBlock).Text = Directory.GetCurrentDirectory();
+        }
+
+        private void OpenInstallDirPathButton_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new Process
+            {
+                StartInfo = new ProcessStartInfo(Directory.GetCurrentDirectory())
+                {
+                    UseShellExecute = true,
+                }
+            };
+            p.Start();
         }
     }
 }

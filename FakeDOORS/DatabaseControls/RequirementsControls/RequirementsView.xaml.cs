@@ -586,6 +586,8 @@ namespace FakeDOORS
             ReqDataGrid.UpdateLayout();
             ReqHelperTop.Items.Refresh();
             ReqHelperBottom.Items.Refresh();
+
+            await Task.CompletedTask;
         }
 
         private async void ReqDataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
