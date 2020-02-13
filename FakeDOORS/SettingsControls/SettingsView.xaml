@@ -36,9 +36,9 @@
                            VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <Button Grid.Column="1" Content="Open" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="5 2" Click="OpenInstallDirPathButton_Click"/>
             </Grid>
-            <Button Content="Download Newest Version" Margin="10" Click="Button_Click"/>
-            <Button Content="Open Changelog" Margin="10" Click="Button_Click_1"/>
-            <Button Content="Create Shortcut On Desktop" Margin="10" Click="Button_Click_2"/>
+            <Button Content="Download Newest Version" Margin="10" Click="UpdateButton_Click"/>
+            <Button Content="Open Changelog" Margin="10" Click="OpenChangelogButton_Click"/>
+            <Button Content="Create Shortcut On Desktop" Margin="10" Click="CreateShortcutButton_Click"/>
             <TextBlock Text="Author: KMIM" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10"/>
         </StackPanel>
     </Grid>

@@ -1,5 +1,6 @@
 ﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
 using FakeDOORS.DatabaseControls.DatabaseSettingsControls;
+using FakeDOORS.DatabaseControls.ScrollToRequirementControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
 using FakeDOORS.SettingsControls;
 using Microsoft.Extensions.Configuration;
@@ -46,13 +47,14 @@ namespace FakeDOORS
             services.AddTransient<IDatabaseSettingsView, DatabaseSettingsView>();
             services.AddTransient<IUpdaterView, UpdaterView>();
             services.AddTransient<ISettingsView, SettingsView>();
+            services.AddTransient<IScrollToRequirementView, ScrollToRequirementView>();
 
             services.AddSingleton<AppSettings>();
         }
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("EXCEPTION: "+e.Exception.Message);
+            MessageBox.Show("EXCEPTION: " + e.Exception.Message);
             e.Handled = true;
         }
     }

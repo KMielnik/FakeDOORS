@@ -4,6 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FakeDOORS"
+             xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Dialog:DialogParticipation.Register="{Binding}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -15,12 +18,14 @@
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="65"/>
             </Grid.RowDefinitions>
 
-            <ContentControl Grid.Row="0" Name="TestCasesViewControl"/>
-            <ContentControl Grid.Row="1" Name="ChapterSelectionViewControl"/>
+            <ContentControl Grid.Row="0" Name="ReqScrollViewControl"/>
+            <ContentControl Grid.Row="1" Name="TestCasesViewControl"/>
+            <ContentControl Grid.Row="2" Name="ChapterSelectionViewControl"/>
         </Grid>
 
         <ContentControl Grid.Column="1" Name="RequirementsViewControl"/>

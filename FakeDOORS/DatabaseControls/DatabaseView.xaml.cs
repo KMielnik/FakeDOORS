@@ -1,6 +1,7 @@
 ﻿using FakeDOORS.DatabaseControls.ChapterSelectionControls;
 using FakeDOORS.DatabaseControls.DatabaseSettingsControls;
 using FakeDOORS.DatabaseControls.RequirementsControls;
+using FakeDOORS.DatabaseControls.ScrollToRequirementControls;
 using FakeDOORS.DatabaseControls.TestCasesControls;
 using Microsoft.Extensions.DependencyInjection;
 using ReqTools;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace FakeDOORS
 {
@@ -19,6 +21,7 @@ namespace FakeDOORS
     {
         private IRequirementsView requirementsView;
         private ITestCasesView testCasesView;
+        private IScrollToRequirementView reqScrollView;
         private IChapterSelectionView chapterSelectionView;
         private IDatabaseSettingsView databaseSettingsView;
 
@@ -34,6 +37,21 @@ namespace FakeDOORS
             TestCasesViewInit();
             ChapterSelectionViewInit();
             DatabaseSettingsViewInit();
+            ScrollToRequirementViewInit();
+        }
+
+        private void ScrollToRequirementViewInit()
+        {
+            reqScrollView = App.ServiceProvider.GetRequiredService<IScrollToRequirementView>();
+            reqScrollView.ReqScrollRequested += ReqScrollView_ReqScrollRequested;
+
+            ReqScrollViewControl.Content = reqScrollView;
+        }
+
+        private async void ReqScrollView_ReqScrollRequested(object sender, ReqScrollEventArgsr e)
+        {
+            if (requirementsView.ScrollToReq(e.RequestedReq) == false)
+                await DialogCoordinator.Instance.ShowMessageAsync(this, "Error", "Could not find requested requirement.", MessageDialogStyle.Affirmative);
         }
 
         private void DatabaseSettingsViewInit()

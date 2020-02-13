@@ -35,16 +35,20 @@ namespace ReqTools
 
             if (File.Exists(defaultCachedFileName))
             {
-                try 
+                try
                 {
                     await RefreshCachedData();
                 }
                 catch { };
-                
+
                 RequirementsChanged?.Invoke(this, EventArgs.Empty);
             }
             else
-                await DownloadNewestVersion();
+                try
+                {
+                    await DownloadNewestVersion();
+                }
+                catch { };
         }
         public async Task<bool> CheckForUpdates()
         => await Task.Run(() =>

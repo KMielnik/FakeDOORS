@@ -13,5 +13,6 @@ namespace FakeDOORS
         IEnumerable<Requirement> GetSelectedRequirements();
         void LimitScrollingToOneChapter(int chapter);
         event RoutedEventHandler Loaded;
+        bool ScrollToReq(string Req);
     }
 }

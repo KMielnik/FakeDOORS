@@ -626,6 +626,7 @@ namespace FakeDOORS
             var helper = (DataGrid)sender;
             helper.SelectedItems.Clear();
 
+            Focus();
             ReqDataGrid.Focus();
         }
 
@@ -654,5 +655,23 @@ namespace FakeDOORS
 
         public IEnumerable<Requirement> GetSelectedRequirements()
         => ReqDataGrid.SelectedItems.Cast<Requirement>();
+
+        public bool ScrollToReq(string Req)
+        {
+            var foundReq = ReqDataGrid.Items.Cast<Requirement>().FirstOrDefault(x => x.ID == $"PR_PH_{Req}" && x.IsVisible);
+
+            if(foundReq != null)
+            {
+                ReqDataGrid.SelectedItems.Clear();
+                ReqDataGrid.SelectedItems.Add(foundReq);
+                ReqDataGrid.ScrollIntoView((Requirement)ReqDataGrid.SelectedItems[0]);
+
+                Focus();
+                ReqDataGrid.Focus();
+                return true;
+            }
+
+            return false;
+        }
     }
 }

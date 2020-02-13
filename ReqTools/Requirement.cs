@@ -70,8 +70,9 @@ namespace ReqTools
 
             this.TCs = new List<TestCase>();
 
-            this.TCs.AddRange(TCs);
-            TCIDsValue = TCs.Select(x => x.IDValue).ToHashSet();
+            if(TCs!=null)
+                this.TCs.AddRange(TCs);
+            TCIDsValue = TCs?.Select(x => x.IDValue).ToHashSet() ?? new HashSet<int>();
 
             IsVisible = true;
         }

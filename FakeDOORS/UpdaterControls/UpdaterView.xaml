@@ -16,7 +16,6 @@
             <TextBlock Name="ActualExportDateTextBlock" VerticalAlignment="Center" Margin="5 0"/>
             <Button Name="UpdateButton" Content="Get latest version"
                         Padding="8 3" Margin="8 0" VerticalAlignment="Center" Click="UpdateButton_Click"/>
-            <Button Content="Select used cache file" Click="SelectFileButton_Click" Padding="8 3"/>
         </StackPanel>
         <Button Content="Doors Exporter" Padding="8 3" Margin="20 0"
                     VerticalAlignment="Center" HorizontalAlignment="Right"

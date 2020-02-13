@@ -17,6 +17,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
     public partial class TestCasesView : UserControl, ITestCasesView
     {
         public ObservableCollection<int> TestCases { get; set; } = new ObservableCollection<int>();
+        private string TCFilterActual = "";
 
         private IDatabaseService databaseService;
         public TestCasesView(IDatabaseService databaseService)
@@ -50,6 +51,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
         private void SetTCListViewFilter()
         {
             var TCView = CollectionViewSource.GetDefaultView(TestCases);
+
             TCView.Filter = x =>
             {
                 if (AllTCsListBox.SelectedItems.Contains(x))
@@ -57,11 +59,7 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
                 if (string.IsNullOrEmpty(TCFilter.Text))
                     return true;
 
-                var delimeter = Regex.Match(TCFilter.Text, "[^0-9]");
-                if (!delimeter.Success)
-                    return x.ToString().StartsWith(TCFilter.Text);
-
-                return x.ToString().StartsWith(TCFilter.Text.Split(delimeter.Value.ToCharArray()).Last());
+                return x.ToString().StartsWith(TCFilterActual);
             };
         }
 
@@ -94,8 +92,11 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
 
             e.Handled = true;
             var tcs = TCFilter.Text
+                .Select(x => char.IsNumber(x) ? x : ' ')
+                .Aggregate("", (acc, x) => acc + x)
                 .Trim()
                 .Split(' ')
+                .Where(x => x != string.Empty)
                 .Select(x => int.Parse(x))
                 .ToList();
 
@@ -107,6 +108,12 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
 
         private void TCFilter_TextChanged(object sender, TextChangedEventArgs e)
         {
+            var delimeter = Regex.Match(TCFilter.Text.Reverse().Aggregate("", (acc, y) => acc + y), "[^0-9]");
+            if (!delimeter.Success)
+                TCFilterActual = TCFilter.Text;
+
+            TCFilterActual = TCFilter.Text.Split(delimeter.Value.ToCharArray()).Last();
+
             CollectionViewSource.GetDefaultView(TestCases).Refresh();
         }
 

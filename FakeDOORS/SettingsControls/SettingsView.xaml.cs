@@ -48,33 +48,32 @@ namespace FakeDOORS.SettingsControls
             p.Start();
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
-        => await Task.Run(async () =>
-         {
-             try
-             {
-                 var backupLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe.bak";
-                 var installLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe";
-                 var serverLocation = settings.ServerPath + "FakeDOORS.exe";
-                 if (File.Exists(backupLocation))
-                     File.Delete(backupLocation);
+        private async void UpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var backupLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe.bak";
+                var installLocation = Directory.GetCurrentDirectory() + @"\FakeDOORS.exe";
+                var serverLocation = settings.ServerPath + "FakeDOORS.exe";
+                if (File.Exists(backupLocation))
+                    File.Delete(backupLocation);
 
-                 File.Move(installLocation, backupLocation, true);
-                 File.Copy(serverLocation, installLocation, true);
-                 await DialogCoordinator.Instance.ShowMessageAsync(this, "Success!", "Done, restart app to use the new version");
-             }
-             catch
-             {
-                 await DialogCoordinator.Instance.ShowMessageAsync(this, "Error", $"Couldn't install the newest version.\nPlease install it manually from\n{settings.ServerPath}\nCopy it to\n{Directory.GetCurrentDirectory()}");
-             }
-         });
+                File.Move(installLocation, backupLocation, true);
+                File.Copy(serverLocation, installLocation, true);
+                await DialogCoordinator.Instance.ShowMessageAsync(this, "Success!", "Done, restart app to use the new version");
+            }
+            catch
+            {
+                await DialogCoordinator.Instance.ShowMessageAsync(this, "Error", $"Couldn't install the newest version.\nPlease install it manually from\n{settings.ServerPath}\nCopy it to\n{Directory.GetCurrentDirectory()}");
+            }
+        }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void OpenChangelogButton_Click(object sender, RoutedEventArgs e)
         {
             App.ServiceProvider.GetRequiredService<ChangelogWindow>().Show();
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void CreateShortcutButton_Click(object sender, RoutedEventArgs e)
         {
             ShortcutCreator.CreateShortcut();
         }
@@ -86,14 +85,16 @@ namespace FakeDOORS.SettingsControls
 
         private void OpenInstallDirPathButton_Click(object sender, RoutedEventArgs e)
         {
-            var p = new Process
+            using (var p = new Process
             {
                 StartInfo = new ProcessStartInfo(Directory.GetCurrentDirectory())
                 {
                     UseShellExecute = true,
                 }
-            };
-            p.Start();
+            })
+            {
+                p.Start();
+            }
         }
     }
 }
