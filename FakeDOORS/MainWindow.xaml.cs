@@ -3,6 +3,7 @@ using MahApps.Metro.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace FakeDOORS
@@ -32,16 +33,19 @@ namespace FakeDOORS
             this.settings = options;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var version = $"{settings.VersionMajor}.{settings.VersionMinor}";
             this.Title += $" - {version}";
 
             try
             {
-                var serverVersion = File.ReadAllText(settings.ServerPath + @"actual_version.txt");
-                if (version != serverVersion)
-                    this.Title += $" - NEW VERSION AVAILABLE ({serverVersion})";
+                await Task.Run(() =>
+                {
+                    var serverVersion = File.ReadAllText(settings.ServerPath + @"actual_version.txt");
+                    if (version != serverVersion)
+                        this.Title += $" - NEW VERSION AVAILABLE ({serverVersion})";
+                });
             }
             catch { }
         }

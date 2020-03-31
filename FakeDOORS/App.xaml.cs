@@ -23,6 +23,8 @@ namespace FakeDOORS
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory());
 
+            this.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+
             Configuration = builder.Build();
 
             var serviceCollection = new ServiceCollection();
@@ -54,7 +56,8 @@ namespace FakeDOORS
 
         void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("EXCEPTION: " + e.Exception.Message);
+            MessageBox.Show($"Exception message: {e.Exception.Message}\n\nStack trace:{e.Exception.StackTrace}", "INTERNAL ERROR :)");
+
             e.Handled = true;
         }
     }

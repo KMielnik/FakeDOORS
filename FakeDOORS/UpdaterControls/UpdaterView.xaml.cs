@@ -67,10 +67,18 @@ namespace FakeDOORS
 
         private async void UpdateButton_Loaded(object sender, RoutedEventArgs e)
         {
-            if(await databaseService.CheckForUpdates())
+            try
             {
-                UpdateButton.Content = "UPDATE AVAILABLE";
-                UpdateButton.Background = Brushes.Red;
+                bool isUpdateAvailable = await databaseService.CheckForUpdates();
+                if (isUpdateAvailable)
+                {
+                    UpdateButton.Content = "UPDATE AVAILABLE";
+                    UpdateButton.Background = Brushes.Red;
+                }
+            }
+            catch
+            {
+                await DialogCoordinator.Instance.ShowMessageAsync(this, "Warning", "Cannot access the server");
             }
         }
     }
