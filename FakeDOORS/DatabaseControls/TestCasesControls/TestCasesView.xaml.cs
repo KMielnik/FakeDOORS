@@ -91,14 +91,29 @@ namespace FakeDOORS.DatabaseControls.TestCasesControls
                 return;
 
             e.Handled = true;
-            var tcs = TCFilter.Text
+            var inputs = TCFilter.Text
                 .Select(x => char.IsNumber(x) ? x : ' ')
                 .Aggregate("", (acc, x) => acc + x)
                 .Trim()
                 .Split(' ')
                 .Where(x => x != string.Empty)
-                .Select(x => int.Parse(x))
-                .ToList();
+                .Select(x => int.Parse(x));
+            
+
+            List<int> tcs;
+
+            if (AddTCsFromReqsCheckbox.IsChecked == false)
+                tcs = inputs.ToList();
+            else
+            {
+                var allReqs = databaseService.GetRequirements();
+                var reqsTemp = inputs.Select(i => allReqs.Find(req => req.IDValue == i));
+
+                tcs = databaseService.GetTestCasesFromReqList(reqsTemp)
+                    .Select(tc=>tc.IDValue)
+                    .ToList();
+
+            }
 
             AddSelectedTCs(tcs);
             PushSelectedTCsUp();

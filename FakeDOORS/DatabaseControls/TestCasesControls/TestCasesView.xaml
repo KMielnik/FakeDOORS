@@ -15,8 +15,14 @@
             <RowDefinition Height="35"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Test Case Filters" FontWeight="Bold"
+        <Grid Grid.Row="0">
+            
+            <TextBlock DockPanel.Dock="Top" Text="Test Case Filters" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <CheckBox Name="AddTCsFromReqsCheckbox" ToolTip="Select tests for inserted requirements"
+                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        </Grid>
+        
         <TextBox Grid.Row="1" Name="TCFilter" Margin="5 2" TextChanged="TCFilter_TextChanged" 
                      VerticalAlignment="Center" KeyDown="TCFilter_KeyDown"/>
         <ListBox Grid.Row="2" Margin="10 5" 
