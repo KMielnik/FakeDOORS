@@ -1,15 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
-    <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishTrimmed>true</PublishTrimmed>
     <PublisherName>KMIM</PublisherName>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>fakedoors.ico</ApplicationIcon>
-    <Version>2.5</Version>
+    <Version>2.6</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
